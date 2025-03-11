@@ -1,0 +1,16 @@
+{
+	"name": "Cadmium_Scorecard_GetReviewQuestions_Rest_DS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Cadmium_Scorecard_GetReviewQuestions_Rest_DS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Cadmim-Scorecard-Dataset"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,16 @@
+{
+	"name": "HubSpot_GetCampaignActivity_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HubSpot_GetCampaignActivity_LL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

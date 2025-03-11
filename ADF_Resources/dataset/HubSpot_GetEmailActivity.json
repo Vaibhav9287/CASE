@@ -1,0 +1,16 @@
+{
+	"name": "HubSpot_GetEmailActivity",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HubSpot_GetEmailActivity_LS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "Hubspot_Companies_prod",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hubspot_Prod",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "HubspotObject",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "\"Hubspot\".\"Companies\""
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

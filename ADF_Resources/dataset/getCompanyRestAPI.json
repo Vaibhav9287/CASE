@@ -1,0 +1,16 @@
+{
+	"name": "getCompanyRestAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HubSpot_GetCompany_LS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

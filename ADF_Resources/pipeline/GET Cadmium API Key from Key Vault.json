@@ -1,0 +1,108 @@
+{
+	"name": "GET Cadmium API Key from Key Vault",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetAPIKey",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@activity('Lookup1').output.value[0].CadmiumAPIKey\n",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "API Key",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetAPIKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "ReturnValue",
+							"value": {
+								"type": "Expression",
+								"content": "@activity('GetAPIKey').output.value"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT TOP 1\n    'https://hubspot-accesstoken.vault.azure.net/secrets/cadmiumAPIKey/'+CAST(Versions AS nvarchar(200))+'?api-version=7.0'  as CadmiumAPIKey\nFROM \n    admin.cadmiumAPIKeyVersions\nORDER BY \n    ID DESC;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_dev_cdp_ds",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"variables": {
+			"APIKey": {
+				"type": "String"
+			},
+			"Key": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Generic cadimium for API key"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:27:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

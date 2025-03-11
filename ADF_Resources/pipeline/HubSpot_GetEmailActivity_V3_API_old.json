@@ -1,0 +1,794 @@
+{
+	"name": "HubSpot_GetEmailActivity_V3_API_old",
+	"properties": {
+		"description": "To get Contacts from Hubspot using API",
+		"activities": [
+			{
+				"name": "CopyHubSpotEmailActivity",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "tokenExpire",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ', variables('Token'))",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"RecordID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_createdate']"
+								},
+								"sink": {
+									"name": "CreateDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_direction_and_unique_id']"
+								},
+								"sink": {
+									"name": "EmailDirection",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_email']"
+								},
+								"sink": {
+									"name": "EmailFromAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_firstname']"
+								},
+								"sink": {
+									"name": "EmailFromFirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_lastname']"
+								},
+								"sink": {
+									"name": "EmailFromLastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_html']"
+								},
+								"sink": {
+									"name": "EmailBody",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_status']"
+								},
+								"sink": {
+									"name": "EmailSendStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_subject']"
+								},
+								"sink": {
+									"name": "EmailSubject",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_email']"
+								},
+								"sink": {
+									"name": "EmailToAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_firstname']"
+								},
+								"sink": {
+									"name": "EmailToFirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_lastname']"
+								},
+								"sink": {
+									"name": "EmailToLastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lastmodifieddate']"
+								},
+								"sink": {
+									"name": "LastModifiedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_id']"
+								},
+								"sink": {
+									"name": "RecordID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['createdAt']"
+								},
+								"sink": {
+									"name": "createdAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updatedAt']"
+								},
+								"sink": {
+									"name": "updatedAt",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "HubSpot_GetEmailActivity",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "EmailActivity_CDP_Sink_Dataset",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "GetOffSetValue",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "CopyHubSpotEmailActivity",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('Bearer ', variables('Token'))",
+							"type": "Expression"
+						}
+					},
+					"url": "https://api.hubapi.com/crm/v3/objects/emails?limit=100"
+				}
+			},
+			{
+				"name": "setHasMore",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set After",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "hasMore",
+					"value": {
+						"value": "@if(contains(activity('GetOffSetValue').output, 'paging'), true, false)\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set After",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetOffSetValue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "after",
+					"value": {
+						"value": "@activity('GetOffSetValue').output.paging.next.after",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "until_has_more_is_false",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "setHasMore",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('hasMore'), false)\n",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopyHubSpotEmailActivityInnerLoop",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@concat('Bearer ', variables('Token'))",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"RecordID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['id']"
+											},
+											"sink": {
+												"name": "ID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_createdate']"
+											},
+											"sink": {
+												"name": "CreateDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_direction_and_unique_id']"
+											},
+											"sink": {
+												"name": "EmailDirection",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_from_email']"
+											},
+											"sink": {
+												"name": "EmailFromAddress",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_from_firstname']"
+											},
+											"sink": {
+												"name": "EmailFromFirstName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_from_lastname']"
+											},
+											"sink": {
+												"name": "EmailFromLastName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_html']"
+											},
+											"sink": {
+												"name": "EmailBody",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_status']"
+											},
+											"sink": {
+												"name": "EmailSendStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_subject']"
+											},
+											"sink": {
+												"name": "EmailSubject",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_to_email']"
+											},
+											"sink": {
+												"name": "EmailToAddress",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_to_firstname']"
+											},
+											"sink": {
+												"name": "EmailToFirstName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_to_lastname']"
+											},
+											"sink": {
+												"name": "EmailToLastName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lastmodifieddate']"
+											},
+											"sink": {
+												"name": "LastModifiedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_id']"
+											},
+											"sink": {
+												"name": "RecordID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['createdAt']"
+											},
+											"sink": {
+												"name": "createdAt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['updatedAt']"
+											},
+											"sink": {
+												"name": "updatedAt",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "HubSpot_GetEmailActivity_InnerLoop_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"after": "@variables('after')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "EmailActivity_CDP_Sink_Dataset",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "GetAfterandHasMoreValue",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "CopyHubSpotEmailActivityInnerLoop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', variables('Token'))",
+										"type": "Expression"
+									}
+								},
+								"url": {
+									"value": "https://api.hubapi.com/crm/v3/objects/emails?limit=100&after=@{variables('after')}\n\n ",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "updateafterValue",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "updateHasMoreValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "after",
+								"value": {
+									"value": "@if(contains(activity('GetAfterandHasMoreValue').output, 'paging'), activity('GetAfterandHasMoreValue').output.paging.next.after, null)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "updateHasMoreValue",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "GetAfterandHasMoreValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "hasMore",
+								"value": {
+									"value": "@if(contains(activity('GetAfterandHasMoreValue').output, 'paging'), true, false)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "to check token Expired or not",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "updateafterValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greaterOrEquals(utcnow(), variables('tokenExpireAt'))\n",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "toGetFreshAccessToken",
+										"type": "WebActivity",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"method": "GET",
+											"headers": {
+												"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+											},
+											"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+										}
+									},
+									{
+										"name": "updateToken",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "toGetFreshAccessToken",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Token",
+											"value": {
+												"value": "@activity('toGetFreshAccessToken').output.token",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "updateExpireAt",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "updateToken",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "tokenExpireAt",
+											"value": {
+												"value": "@activity('toGetFreshAccessToken').output.expireAt",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "To get Token Details",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+					},
+					"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+				}
+			},
+			{
+				"name": "token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "To get Token Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('To get Token Details').output.token\n\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "tokenExpire",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tokenExpireAt",
+					"value": {
+						"value": "@activity('To get Token Details').output.expireAt\n\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Offset": {
+				"type": "String"
+			},
+			"OffsetValue": {
+				"type": "Integer"
+			},
+			"hasMore": {
+				"type": "Boolean"
+			},
+			"Token": {
+				"type": "String"
+			},
+			"tokenExpireAt": {
+				"type": "String"
+			},
+			"after": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Unused"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-04T09:04:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

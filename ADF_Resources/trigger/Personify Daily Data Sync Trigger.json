@@ -1,0 +1,36 @@
+{
+	"name": "Personify Daily Data Sync Trigger",
+	"properties": {
+		"description": "This will trigger pipeline which will pull data from VM DB and ingest into CDP database.",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Personify_VM_Data_to_CDP_DB_Daily_Trigger",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "Personify_VM_Data_to_CDP_DB_Daily_Trigger_for Insert",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-10-08T07:26:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"hours": [
+						22
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"name": "case_eus_dev_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_eus_dev_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"destSchema": {
+				"type": "string"
+			},
+			"destTableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().destSchema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().destTableName",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

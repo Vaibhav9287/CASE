@@ -1,0 +1,27 @@
+{
+	"name": "get_Presentation_rest_api_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "cadmium_education_harvester_rest_api_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeURL": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester-Dataset"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeURL",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

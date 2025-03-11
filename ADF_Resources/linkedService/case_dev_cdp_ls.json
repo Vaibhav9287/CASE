@@ -1,0 +1,17 @@
+{
+	"name": "case_dev_cdp_ls",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "case-eus-devsql.database.windows.net",
+			"database": "CDP",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "saadmin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDdDRjU0Nzg5LTg0N0ItNEUzQi1BMkEzLUEyN0JFOTIyM0ZBM19kYTdkODg1Yi1kM2JmLTQzMDctYmRjOC01MjZjYmY0ZTcyMWYiDQp9"
+		}
+	}
+}

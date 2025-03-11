@@ -1,0 +1,223 @@
+{
+	"name": "Cadmium_Get_PresentationsPresenters_Weekly_Trigger",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Presentation Presenter URL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "APIKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n    'HarvesterJsonAPI.asp?APIKey='+'@{variables('GetAPIKey')}'+ '&Method=getPresentationsWithPresenters&eID=' + CAST(Event_ID AS VARCHAR) AS PresentationPresenter_Url, Event_ID\nFROM \n    admin.Event_Details WHERE IsActive = 1;",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_dev_cdp_ds",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Loop over Presentation Presenter URL",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Presentation Presenter URL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Presentation Presenter URL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Presentation Data flow",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "Cadmium_Presentation_Dataflow",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"RestAPIData": {
+											"relativeUrlParameter": "@item().PresentationPresenter_Url"
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						},
+						{
+							"name": "Presenter Data flow",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [
+								{
+									"activity": "Presentation Data flow",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "Cadmium_Presenter_Dataflow",
+									"type": "DataFlowReference",
+									"parameters": {
+										"EventID": {
+											"value": "@string(item().Event_ID)",
+											"type": "Expression"
+										}
+									},
+									"datasetParameters": {
+										"RestAPIData": {
+											"relativeUrlParameter": "@item().PresentationPresenter_Url"
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						},
+						{
+							"name": "Presentation Presenter Data flow",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [
+								{
+									"activity": "Presenter Data flow",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "Cadmium_PresentationPresenter_Mapping_Dataflow",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"RestAPIData": {
+											"relativeUrlParameter": "@item().PresentationPresenter_Url"
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Execute Get Cadmium API key Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GET Cadmium API Key from Key Vault",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "APIKey",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Execute Get Cadmium API key Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "GetAPIKey",
+					"value": {
+						"value": "@activity('Execute Get Cadmium API key Pipeline').output.pipelineReturnValue.ReturnValue",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"GetAPIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Unused"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-03T12:47:29Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

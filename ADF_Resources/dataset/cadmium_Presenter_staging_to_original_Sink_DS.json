@@ -1,0 +1,541 @@
+{
+	"name": "cadmium_Presenter_staging_to_original_Sink_DS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_dev_cdp_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester-Dataset"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "PresenterID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterDateAdded",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresenterDateEdited",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresenterPrefix",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterFirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMiddleInitial",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterLastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSuffix2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSuffix",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pronoun",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPosition",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterOrganization",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSpecialty",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSpecialtyOther",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSpecialty2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterSpecialty2Other",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMedicalCenter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterClinicalMedicalTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAcademicTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAcademicInstitution",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterOtherAffiliations",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEmail",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAddress1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAddress2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAddress3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterState",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterZip",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCountry",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterContinent",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTelephoneOffice",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTelephoneCell",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTelephoneFax",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAssistantName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAssistantEmail",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterAssistantTelephone",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBiographyText",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBiographyDateAdded",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBiographyDateEdited",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBioSketchText",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBioSketchDateAdded",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBioSketchDateEdited",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoOriginalName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoFileName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoWebFileName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoSize",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoExtension",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoWidth",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoHeight",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoDateAdded",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoDeleteLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoOptOut",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPhotoOptOutDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterNotes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterDeleteStatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCategory",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTaxID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationAuthorList",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEmailShare",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterStudentYesNo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterDepartment",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTwitterHandle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterFacebook",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterLinkedIn",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMemberStatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMemberLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMemberExpiration",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCompensationStatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterMemberNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField11",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField12",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField13",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField14",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField15",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField16",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField17",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField18",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField19",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField20",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField21",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField22",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField23",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField24",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField25",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField26",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField27",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField28",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField29",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterCustomField30",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterProfessionalNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterTwitter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterInstagram",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterPinterest",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterYouTube",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterGooglePlus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterWebsite",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterWebsite2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterBlog",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterRosterFlag",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsQuestion1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsQuestion2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsQuestion3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsQuestion4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsQuestion5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsOverallRoles",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "pedCustomField10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresenterEventDetailsDisclosures",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EventID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "__mj_CreatedAt",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "__mj_UpdatedAt",
+				"type": "datetimeoffset",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "Presenter"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

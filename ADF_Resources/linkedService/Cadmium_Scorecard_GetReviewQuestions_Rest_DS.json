@@ -1,0 +1,13 @@
+{
+	"name": "Cadmium_Scorecard_GetReviewQuestions_Rest_DS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/ReviewQuestions",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

@@ -1,0 +1,63 @@
+{
+	"name": "Cadmium_Scorecard_GetReviewQuestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "FetchReviewQuestions",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://www.conferenceabstracts.com/webservices/api.asp?APIKey=TEu235o9Pd1a&Method=getReviewQuestions"
+				}
+			},
+			{
+				"name": "FormatedFetchReviewQuestions",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "FetchReviewQuestions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/ReviewQuestions",
+					"body": {
+						"value": "@activity('FetchReviewQuestions').output",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"FilteredResults": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

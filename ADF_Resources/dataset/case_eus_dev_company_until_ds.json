@@ -1,0 +1,20 @@
+{
+	"name": "case_eus_dev_company_until_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_eus_dev_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "hubspot",
+			"table": "Companies"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

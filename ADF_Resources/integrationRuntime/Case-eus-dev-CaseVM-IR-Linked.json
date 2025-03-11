@@ -1,0 +1,12 @@
+{
+	"name": "Case-eus-dev-CaseVM-IR-Linked",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/2ce860fd-f961-4177-b1e0-e360fa198f76/resourcegroups/CASE_MemberJunction_EastUS/providers/Microsoft.DataFactory/factories/case-data-migration-poc/integrationruntimes/Case-eus-dev-CaseVM-IR",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}

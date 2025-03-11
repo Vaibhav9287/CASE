@@ -1,0 +1,34 @@
+{
+	"name": "VM_Personfity_SQL_connect_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Personify_VM_DB_Connection_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"sourceTable": {
+				"type": "string"
+			},
+			"sourceSchema": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().sourceSchema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().sourceTable",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

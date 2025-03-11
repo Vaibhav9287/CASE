@@ -1,0 +1,195 @@
+{
+	"name": "Cadmium_Scorecard_GetAuthor_Batching",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Batch Count",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "APIKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT MAX(BatchID) AS TotalBatches FROM admin.Event_Details;",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_eus_sql_dev_batch_ds",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Total_Batches",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Batch Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TotalBatches",
+					"value": {
+						"value": "@activity('Get Batch Count').output.firstRow.TotalBatches",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "IterateOverBatch",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Total_Batches",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, variables('TotalBatches'))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Item Value",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "item",
+								"value": {
+									"value": "@item()",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute Batching",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Item Value",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Cadmium_Scorecard_GetAuthor_Batching_CHILD",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"BatchID": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"APIKeyParam": {
+										"value": "@variables('GetAPIKey')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Execute Get Cadmium API key Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GET Cadmium API Key from Key Vault",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "APIKey",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Execute Get Cadmium API key Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "GetAPIKey",
+					"value": {
+						"value": "@activity('Execute Get Cadmium API key Pipeline').output.pipelineReturnValue.ReturnValue",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"TotalBatches": {
+				"type": "Integer"
+			},
+			"item": {
+				"type": "Integer"
+			},
+			"GetAPIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

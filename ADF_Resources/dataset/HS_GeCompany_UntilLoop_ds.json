@@ -1,0 +1,27 @@
+{
+	"name": "HS_GeCompany_UntilLoop_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hs_getcompany_until_ls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"after": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "companies?limit=100&properties=ID,about_us,hs_annual_revenue,engagements_last_meeting_booked_campaign,case_district,case_region,city,closedate,domain,hs_keywords,name,hubspot_owner_id,country,hs_country_code,createdate,created_by_user_id,engagements_last_meeting_booked,days_to_close,amount,description,hs_employee_range,facebook_company_page,facebookfans,first_contact_createdate,first_conversion_event_name,first_conversion_date,first_deal_created_date,hs_analytics_first_touch_converting_campaign,fte,googleplus_page,hs_is_enriched,hubspot_team_id,hs_ideal_customer_profile,industry,hs_industry_group,institution_type,is_member_in_grace_,is_public,hs_last_activity_date,hs_last_booked_meeting_date,notes_last_contacted,hs_last_engagement_date,hs_last_logged_call_date,lastmodifieddate,hs_last_open_task_date,hs_analytics_last_touch_converting_campaign,hs_latest_source,hs_latest_source_data_1,hs_latest_source_data_2,hs_latest_source_timestamp,hs_lead_status,lifecyclestage,hs_predictivecontactscore_v2,linkedinbio,linkedin_company_page,linkedin_handle,logo,engagements_last_meeting_booked_medium,membership_begin,membership_end_date,membership_grace_date,hs_merged_object_ids,notes_next_activity_date,num_associated_contacts,num_associated_deals,hs_num_blockers,hs_num_child_companies,hs_num_contacts_with_buying_roles,hs_num_decision_makers,numberofemployees,num_conversion_events,hs_num_open_deals,hs_analytics_num_page_views,hs_analytics_num_visits,num_contacted_notes,hs_analytics_source,hs_analytics_source_data_1,hs_analytics_source_data_2,hubspot_owner_assigneddate,hs_parent_company_id,personify_institution_id,phone,zip,recent_conversion_event_name,recent_conversion_date,recent_deal_amount,recent_deal_close_date,hs_object_source,hs_object_source_detail_1,hs_object_source_detail_2,hs_object_source_detail_3,hs_revenue_range,hs_shared_team_ids,hs_shared_user_ids,engagements_last_meeting_booked_source,state,address,address_2,street_address_3,hs_target_account,hs_time_first_seen,hs_time_last_seen,hs_time_of_first_session,hs_time_of_last_session,timezone,total_money_raised,hs_total_open_deal_value,hs_total_revenue,twitterbio,hs_twitter_followers,hs_twitter_handle,type,hs_updated_by_user_id,web_technologies,website,founded_year&after=@{dataset().after}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

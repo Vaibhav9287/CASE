@@ -1,0 +1,717 @@
+{
+	"name": "Cadmium_Scorecard_GetSubmitter_Batching_CHILD_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, coalesce(pipeline().parameters.PageCount, 1))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set Paginated URL",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PaginatedURL",
+								"value": {
+									"value": "@concat(pipeline().parameters.URL, '&page=', item())\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set Paginated URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@pipeline().parameters.EventID",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"SubmitterID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['SubmitterID']"
+											},
+											"sink": {
+												"name": "SubmitterID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterKey']"
+											},
+											"sink": {
+												"name": "SubmitterKey",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterPrefix']"
+											},
+											"sink": {
+												"name": "SubmitterPrefix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterFirstName']"
+											},
+											"sink": {
+												"name": "SubmitterFirstName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterMiddleInitial']"
+											},
+											"sink": {
+												"name": "SubmitterMiddleInitial",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterLastName']"
+											},
+											"sink": {
+												"name": "SubmitterLastName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterSuffix']"
+											},
+											"sink": {
+												"name": "SubmitterSuffix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['pronoun']"
+											},
+											"sink": {
+												"name": "pronoun",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCredentials']"
+											},
+											"sink": {
+												"name": "SubmitterCredentials",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterPosition']"
+											},
+											"sink": {
+												"name": "SubmitterPosition",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterOrganization']"
+											},
+											"sink": {
+												"name": "SubmitterOrganization",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterEmail']"
+											},
+											"sink": {
+												"name": "SubmitterEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAddress1']"
+											},
+											"sink": {
+												"name": "SubmitterAddress1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAddress2']"
+											},
+											"sink": {
+												"name": "SubmitterAddress2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAddress3']"
+											},
+											"sink": {
+												"name": "SubmitterAddress3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCity']"
+											},
+											"sink": {
+												"name": "SubmitterCity",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterState']"
+											},
+											"sink": {
+												"name": "SubmitterState",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterZip']"
+											},
+											"sink": {
+												"name": "SubmitterZip",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCountry']"
+											},
+											"sink": {
+												"name": "SubmitterCountry",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterTelephoneOffice']"
+											},
+											"sink": {
+												"name": "SubmitterTelephoneOffice",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterTelephoneCell']"
+											},
+											"sink": {
+												"name": "SubmitterTelephoneCell",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterTelephoneFax']"
+											},
+											"sink": {
+												"name": "SubmitterTelephoneFax",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAssistantName']"
+											},
+											"sink": {
+												"name": "SubmitterAssistantName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAssistantEmail']"
+											},
+											"sink": {
+												"name": "SubmitterAssistantEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterAssistantTelephone']"
+											},
+											"sink": {
+												"name": "SubmitterAssistantTelephone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterMember']"
+											},
+											"sink": {
+												"name": "SubmitterMember",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterMemberID']"
+											},
+											"sink": {
+												"name": "SubmitterMemberID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterMemberIDUnique']"
+											},
+											"sink": {
+												"name": "SubmitterMemberIDUnique",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterIDExternalSystem']"
+											},
+											"sink": {
+												"name": "SubmitterIDExternalSystem",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterMemberStatus']"
+											},
+											"sink": {
+												"name": "SubmitterMemberStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterChairRole']"
+											},
+											"sink": {
+												"name": "SubmitterChairRole",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterReviewGroup']"
+											},
+											"sink": {
+												"name": "SubmitterReviewGroup",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterDepartment']"
+											},
+											"sink": {
+												"name": "SubmitterDepartment",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField1']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField2']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField3']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField4']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField5']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField6']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField7']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField8']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField9']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField10']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField11']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField11",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField12']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField12",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField13']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField13",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField14']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField14",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField15']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField15",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField16']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField16",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField17']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField17",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField18']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField18",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField19']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField19",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField20']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField20",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField21']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField21",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField22']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField22",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField23']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField23",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField24']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField24",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField25']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField25",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField26']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField26",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField27']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField27",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField28']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField28",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField29']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField29",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterCustomField30']"
+											},
+											"sink": {
+												"name": "SubmitterCustomField30",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": "@variables('PaginatedURL')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_GetSubmitter_CDP_Sink",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"URL": {
+				"type": "string"
+			},
+			"PageCount": {
+				"type": "int"
+			},
+			"EventID": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"PaginatedURL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			},
+			"GetAPIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,22 @@
+{
+	"name": "SFTP_Personify_Weekly_Full_Backup_Sink_Dataset",
+	"properties": {
+		"description": "This Dataset is a reference to store binary file at VM ",
+		"linkedServiceName": {
+			"referenceName": "SFTP_Personify_PushBackup_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": "/CASE-DB-Backup/CASE-FULL-Backup"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

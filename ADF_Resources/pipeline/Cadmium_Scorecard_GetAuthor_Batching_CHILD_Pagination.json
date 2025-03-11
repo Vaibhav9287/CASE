@@ -1,0 +1,643 @@
+{
+	"name": "Cadmium_Scorecard_GetAuthor_Batching_CHILD_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, coalesce(pipeline().parameters.PageCount, 1))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set Paginated URL",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PaginatedURL",
+								"value": {
+									"value": "@concat(pipeline().parameters.URL, '&page=', item())\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set Paginated URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@pipeline().parameters.EventID",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"AuthorID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['AuthorID']"
+											},
+											"sink": {
+												"name": "AuthorID"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorKey']"
+											},
+											"sink": {
+												"name": "AuthorKey"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPrefix']"
+											},
+											"sink": {
+												"name": "AuthorPrefix"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorFirstName']"
+											},
+											"sink": {
+												"name": "AuthorFirstName"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorMiddleInitial']"
+											},
+											"sink": {
+												"name": "AuthorMiddleInitial"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorLastName']"
+											},
+											"sink": {
+												"name": "AuthorLastName"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorSuffix']"
+											},
+											"sink": {
+												"name": "AuthorSuffix"
+											}
+										},
+										{
+											"source": {
+												"path": "['pronoun']"
+											},
+											"sink": {
+												"name": "pronoun"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCredentials']"
+											},
+											"sink": {
+												"name": "AuthorCredentials"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorEmail']"
+											},
+											"sink": {
+												"name": "AuthorEmail"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorEmailAlternative']"
+											},
+											"sink": {
+												"name": "AuthorEmailAlternative"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAddress1']"
+											},
+											"sink": {
+												"name": "AuthorAddress1"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAddress2']"
+											},
+											"sink": {
+												"name": "AuthorAddress2"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAddress3']"
+											},
+											"sink": {
+												"name": "AuthorAddress3"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCity']"
+											},
+											"sink": {
+												"name": "AuthorCity"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorState']"
+											},
+											"sink": {
+												"name": "AuthorState"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorZip']"
+											},
+											"sink": {
+												"name": "AuthorZip"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCountry']"
+											},
+											"sink": {
+												"name": "AuthorCountry"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorTelephoneOffice']"
+											},
+											"sink": {
+												"name": "AuthorTelephoneOffice"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorTelephoneCell']"
+											},
+											"sink": {
+												"name": "AuthorTelephoneCell"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorTelephoneFax']"
+											},
+											"sink": {
+												"name": "AuthorTelephoneFax"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAssistantName']"
+											},
+											"sink": {
+												"name": "AuthorAssistantName"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAssistantEmail']"
+											},
+											"sink": {
+												"name": "AuthorAssistantEmail"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAssistantTelephone']"
+											},
+											"sink": {
+												"name": "AuthorAssistantTelephone"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorBiographyText']"
+											},
+											"sink": {
+												"name": "AuthorBiographyText"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorBiosketchText']"
+											},
+											"sink": {
+												"name": "AuthorBiosketchText"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoOriginalName']"
+											},
+											"sink": {
+												"name": "AuthorPhotoOriginalName"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoFileName']"
+											},
+											"sink": {
+												"name": "AuthorPhotoFileName"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoLocation']"
+											},
+											"sink": {
+												"name": "AuthorPhotoLocation"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoSize']"
+											},
+											"sink": {
+												"name": "AuthorPhotoSize"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoExtension']"
+											},
+											"sink": {
+												"name": "AuthorPhotoExtension"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoWidth']"
+											},
+											"sink": {
+												"name": "AuthorPhotoWidth"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPhotoHeight']"
+											},
+											"sink": {
+												"name": "AuthorPhotoHeight"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPastConferencesYesNo']"
+											},
+											"sink": {
+												"name": "AuthorPastConferencesYesNo"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPastConferencesWhere']"
+											},
+											"sink": {
+												"name": "AuthorPastConferencesWhere"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPastAttendeeYesNo']"
+											},
+											"sink": {
+												"name": "AuthorPastAttendeeYesNo"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorDepartment']"
+											},
+											"sink": {
+												"name": "AuthorDepartment"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorOrganization']"
+											},
+											"sink": {
+												"name": "AuthorOrganization"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAssociationMemberYesNo']"
+											},
+											"sink": {
+												"name": "AuthorAssociationMemberYesNo"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorAssociationMemberNumber']"
+											},
+											"sink": {
+												"name": "AuthorAssociationMemberNumber"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorWebsite']"
+											},
+											"sink": {
+												"name": "AuthorWebsite"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorTwitterHandle']"
+											},
+											"sink": {
+												"name": "AuthorTwitterHandle"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorTwitterPage']"
+											},
+											"sink": {
+												"name": "AuthorTwitterPage"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorLinkedIn']"
+											},
+											"sink": {
+												"name": "AuthorLinkedIn"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorFacebook']"
+											},
+											"sink": {
+												"name": "AuthorFacebook"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorInstagram']"
+											},
+											"sink": {
+												"name": "AuthorInstagram"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorGooglePlus']"
+											},
+											"sink": {
+												"name": "AuthorGooglePlus"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorPosition']"
+											},
+											"sink": {
+												"name": "AuthorPosition"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorMemberLogins']"
+											},
+											"sink": {
+												"name": "AuthorMemberLogins"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField1']"
+											},
+											"sink": {
+												"name": "AuthorCustomField1"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField2']"
+											},
+											"sink": {
+												"name": "AuthorCustomField2"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField3']"
+											},
+											"sink": {
+												"name": "AuthorCustomField3"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField4']"
+											},
+											"sink": {
+												"name": "AuthorCustomField4"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField5']"
+											},
+											"sink": {
+												"name": "AuthorCustomField5"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField6']"
+											},
+											"sink": {
+												"name": "AuthorCustomField6"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField7']"
+											},
+											"sink": {
+												"name": "AuthorCustomField7"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField8']"
+											},
+											"sink": {
+												"name": "AuthorCustomField8"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField9']"
+											},
+											"sink": {
+												"name": "AuthorCustomField9"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorCustomField10']"
+											},
+											"sink": {
+												"name": "AuthorCustomField10"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorRegisteredFlag']"
+											},
+											"sink": {
+												"name": "AuthorRegisteredFlag"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorRegisteredNumber']"
+											},
+											"sink": {
+												"name": "AuthorRegisteredNumber"
+											}
+										},
+										{
+											"source": {
+												"path": "['AuthorMemberFlag']"
+											},
+											"sink": {
+												"name": "AuthorMemberFlag"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID"
+											}
+										}
+									],
+									"collectionReference": "$['results']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": "@variables('PaginatedURL')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_GetAuthor_CDP_Sink_DS",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"URL": {
+				"type": "string"
+			},
+			"PageCount": {
+				"type": "int"
+			},
+			"EventID": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"PaginatedURL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

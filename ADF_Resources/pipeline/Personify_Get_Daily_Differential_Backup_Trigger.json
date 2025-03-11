@@ -1,0 +1,161 @@
+{
+	"name": "Personify_Get_Daily_Differential_Backup_Trigger",
+	"properties": {
+		"description": "This pipeline triggers daily at 8pm IST to take differential .bak file from sftp and stored it into C drive of VM",
+		"activities": [
+			{
+				"name": "Metadata",
+				"description": "This gets files name present in specified directory",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "SFTP_Personify_Daily_Differential_Backup_Source_GetMetaData_Dataset",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "SftpReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false,
+						"disableChunking": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Filter",
+				"description": "This Filter is used to filter a differential file containing a date just before current date IST.",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Metadata",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Metadata').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@contains(item().name, formatDateTime(addDays(utcnow(), -1), 'yyyy_MM_dd'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "variable",
+				"description": "This variable stored the filter file name for further procession",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Filter",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FileName",
+					"value": {
+						"value": "@activity('Filter').output.Value[0].name\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy_Diff_Backup_From_SFTP_To_VM",
+				"description": "This copy data activity copies data from SFTP to VM sftp for further processing",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "variable",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "SftpWriteSettings",
+							"operationTimeout": "01:00:00",
+							"useTempFileRename": true
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SFTP_Personify_Daily_Differential_Backup_Source_Dataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileNameParam": {
+								"value": "@variables('FileName')\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SFTP_Personify_Daily_Differential_Backup_Sink_Dataset",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"FileName": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-13T05:26:32Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

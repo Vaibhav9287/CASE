@@ -1,0 +1,7 @@
+{
+	"name": "casevm-eus-dev-ir",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "This integration runtime is running on VM to connect VM Database to ADF Pipeline."
+	}
+}

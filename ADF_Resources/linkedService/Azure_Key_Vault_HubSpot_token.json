@@ -1,0 +1,11 @@
+{
+	"name": "Azure_Key_Vault_HubSpot_token",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://HubSpot-AccessToken.vault.azure.net/"
+		}
+	}
+}

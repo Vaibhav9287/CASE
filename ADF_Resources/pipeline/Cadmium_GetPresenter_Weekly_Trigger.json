@@ -1,0 +1,1331 @@
+{
+	"name": "Cadmium_GetPresenter_Weekly_Trigger",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Presenter URL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "APIKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n    'HarvesterJsonAPI.asp?APIKey=' \n+ '@{variables('GetAPIKey')}' + '&Method=getPresenters&eID=' + CAST(Event_ID AS VARCHAR) AS Presenter_Url, Event_ID\nFROM \n    admin.Event_Details WHERE IsActive = 1;",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "cdp_eus_case_dev_presenter_url_ds",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Loop over presenter url",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Presenter URL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Presenter URL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "Get Presenter Data",
+							"description": "To get Presenter details through Rest API.",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@string(item().Event_ID)",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"PresenterID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['PresenterID']"
+											},
+											"sink": {
+												"name": "PresenterID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterDateAdded",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterDateEdited",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPrefix']"
+											},
+											"sink": {
+												"name": "PresenterPrefix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterFirstName']"
+											},
+											"sink": {
+												"name": "PresenterFirstName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMiddleInitial']"
+											},
+											"sink": {
+												"name": "PresenterMiddleInitial",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterLastName']"
+											},
+											"sink": {
+												"name": "PresenterLastName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSuffix2']"
+											},
+											"sink": {
+												"name": "PresenterSuffix2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSuffix']"
+											},
+											"sink": {
+												"name": "PresenterSuffix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pronoun']"
+											},
+											"sink": {
+												"name": "pronoun",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPosition']"
+											},
+											"sink": {
+												"name": "PresenterPosition",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterOrganization']"
+											},
+											"sink": {
+												"name": "PresenterOrganization",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSpecialty']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSpecialtyOther']"
+											},
+											"sink": {
+												"name": "PresenterSpecialtyOther",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSpecialty2']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterSpecialty2Other']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty2Other",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMedicalCenter']"
+											},
+											"sink": {
+												"name": "PresenterMedicalCenter",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterClinicalMedicalTitle']"
+											},
+											"sink": {
+												"name": "PresenterClinicalMedicalTitle",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAcademicTitle']"
+											},
+											"sink": {
+												"name": "PresenterAcademicTitle",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAcademicInstitution']"
+											},
+											"sink": {
+												"name": "PresenterAcademicInstitution",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterOtherAffiliations']"
+											},
+											"sink": {
+												"name": "PresenterOtherAffiliations",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEmail']"
+											},
+											"sink": {
+												"name": "PresenterEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAddress1']"
+											},
+											"sink": {
+												"name": "PresenterAddress1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAddress2']"
+											},
+											"sink": {
+												"name": "PresenterAddress2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAddress3']"
+											},
+											"sink": {
+												"name": "PresenterAddress3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCity']"
+											},
+											"sink": {
+												"name": "PresenterCity",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterState']"
+											},
+											"sink": {
+												"name": "PresenterState",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterZip']"
+											},
+											"sink": {
+												"name": "PresenterZip",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCountry']"
+											},
+											"sink": {
+												"name": "PresenterCountry",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterContinent']"
+											},
+											"sink": {
+												"name": "PresenterContinent",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTelephoneOffice']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneOffice",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTelephoneCell']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneCell",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTelephoneFax']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneFax",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAssistantName']"
+											},
+											"sink": {
+												"name": "PresenterAssistantName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAssistantEmail']"
+											},
+											"sink": {
+												"name": "PresenterAssistantEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterAssistantTelephone']"
+											},
+											"sink": {
+												"name": "PresenterAssistantTelephone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBiographyText']"
+											},
+											"sink": {
+												"name": "PresenterBiographyText",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBiographyDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterBiographyDateAdded",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBiographyDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterBiographyDateEdited",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBioSketchText']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchText",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBioSketchDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchDateAdded",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBioSketchDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchDateEdited",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoOriginalName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOriginalName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoFileName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoFileName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoWebFileName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoWebFileName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoSize']"
+											},
+											"sink": {
+												"name": "PresenterPhotoSize",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoExtension']"
+											},
+											"sink": {
+												"name": "PresenterPhotoExtension",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoWidth']"
+											},
+											"sink": {
+												"name": "PresenterPhotoWidth",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoHeight']"
+											},
+											"sink": {
+												"name": "PresenterPhotoHeight",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterPhotoDateAdded",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoDeleteLevel']"
+											},
+											"sink": {
+												"name": "PresenterPhotoDeleteLevel",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoOptOut']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOptOut",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPhotoOptOutDate']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOptOutDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterNotes']"
+											},
+											"sink": {
+												"name": "PresenterNotes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterDeleteStatus']"
+											},
+											"sink": {
+												"name": "PresenterDeleteStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCategory']"
+											},
+											"sink": {
+												"name": "PresenterCategory",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTaxID']"
+											},
+											"sink": {
+												"name": "PresenterTaxID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationAuthorList']"
+											},
+											"sink": {
+												"name": "PresentationAuthorList",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEmailShare']"
+											},
+											"sink": {
+												"name": "PresenterEmailShare",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterStudentYesNo']"
+											},
+											"sink": {
+												"name": "PresenterStudentYesNo",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterDepartment']"
+											},
+											"sink": {
+												"name": "PresenterDepartment",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTwitterHandle']"
+											},
+											"sink": {
+												"name": "PresenterTwitterHandle",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterFacebook']"
+											},
+											"sink": {
+												"name": "PresenterFacebook",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterLinkedIn']"
+											},
+											"sink": {
+												"name": "PresenterLinkedIn",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMemberStatus']"
+											},
+											"sink": {
+												"name": "PresenterMemberStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMemberLevel']"
+											},
+											"sink": {
+												"name": "PresenterMemberLevel",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMemberExpiration']"
+											},
+											"sink": {
+												"name": "PresenterMemberExpiration",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCompensationStatus']"
+											},
+											"sink": {
+												"name": "PresenterCompensationStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterMemberNumber']"
+											},
+											"sink": {
+												"name": "PresenterMemberNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField1']"
+											},
+											"sink": {
+												"name": "PresenterCustomField1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField2']"
+											},
+											"sink": {
+												"name": "PresenterCustomField2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField3']"
+											},
+											"sink": {
+												"name": "PresenterCustomField3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField4']"
+											},
+											"sink": {
+												"name": "PresenterCustomField4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField5']"
+											},
+											"sink": {
+												"name": "PresenterCustomField5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField6']"
+											},
+											"sink": {
+												"name": "PresenterCustomField6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField7']"
+											},
+											"sink": {
+												"name": "PresenterCustomField7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField8']"
+											},
+											"sink": {
+												"name": "PresenterCustomField8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField9']"
+											},
+											"sink": {
+												"name": "PresenterCustomField9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField10']"
+											},
+											"sink": {
+												"name": "PresenterCustomField10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField11']"
+											},
+											"sink": {
+												"name": "PresenterCustomField11",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField12']"
+											},
+											"sink": {
+												"name": "PresenterCustomField12",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField13']"
+											},
+											"sink": {
+												"name": "PresenterCustomField13",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField14']"
+											},
+											"sink": {
+												"name": "PresenterCustomField14",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField15']"
+											},
+											"sink": {
+												"name": "PresenterCustomField15",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField16']"
+											},
+											"sink": {
+												"name": "PresenterCustomField16",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField17']"
+											},
+											"sink": {
+												"name": "PresenterCustomField17",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField18']"
+											},
+											"sink": {
+												"name": "PresenterCustomField18",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField19']"
+											},
+											"sink": {
+												"name": "PresenterCustomField19",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField20']"
+											},
+											"sink": {
+												"name": "PresenterCustomField20",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField21']"
+											},
+											"sink": {
+												"name": "PresenterCustomField21",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField22']"
+											},
+											"sink": {
+												"name": "PresenterCustomField22",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField23']"
+											},
+											"sink": {
+												"name": "PresenterCustomField23",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField24']"
+											},
+											"sink": {
+												"name": "PresenterCustomField24",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField25']"
+											},
+											"sink": {
+												"name": "PresenterCustomField25",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField26']"
+											},
+											"sink": {
+												"name": "PresenterCustomField26",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField27']"
+											},
+											"sink": {
+												"name": "PresenterCustomField27",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField28']"
+											},
+											"sink": {
+												"name": "PresenterCustomField28",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField29']"
+											},
+											"sink": {
+												"name": "PresenterCustomField29",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterCustomField30']"
+											},
+											"sink": {
+												"name": "PresenterCustomField30",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterProfessionalNumber']"
+											},
+											"sink": {
+												"name": "PresenterProfessionalNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterTwitter']"
+											},
+											"sink": {
+												"name": "PresenterTwitter",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterInstagram']"
+											},
+											"sink": {
+												"name": "PresenterInstagram",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterPinterest']"
+											},
+											"sink": {
+												"name": "PresenterPinterest",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterYouTube']"
+											},
+											"sink": {
+												"name": "PresenterYouTube",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterGooglePlus']"
+											},
+											"sink": {
+												"name": "PresenterGooglePlus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterWebsite']"
+											},
+											"sink": {
+												"name": "PresenterWebsite",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterWebsite2']"
+											},
+											"sink": {
+												"name": "PresenterWebsite2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterBlog']"
+											},
+											"sink": {
+												"name": "PresenterBlog",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterRosterFlag']"
+											},
+											"sink": {
+												"name": "PresenterRosterFlag",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsQuestion1']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsQuestion2']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsQuestion3']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsQuestion4']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsQuestion5']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsOverallRoles']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsOverallRoles",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField1']"
+											},
+											"sink": {
+												"name": "pedCustomField1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField2']"
+											},
+											"sink": {
+												"name": "pedCustomField2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField3']"
+											},
+											"sink": {
+												"name": "pedCustomField3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField4']"
+											},
+											"sink": {
+												"name": "pedCustomField4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField5']"
+											},
+											"sink": {
+												"name": "pedCustomField5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField6']"
+											},
+											"sink": {
+												"name": "pedCustomField6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField7']"
+											},
+											"sink": {
+												"name": "pedCustomField7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField8']"
+											},
+											"sink": {
+												"name": "pedCustomField8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField9']"
+											},
+											"sink": {
+												"name": "pedCustomField9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['pedCustomField10']"
+											},
+											"sink": {
+												"name": "pedCustomField10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresenterEventDetailsDisclosures']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsDisclosures",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "get_Presentation_rest_api_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeURL": {
+											"value": "@item().Presenter_Url",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "case_eus_dev_presenter_ds",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Execute Get Cadmium API key Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GET Cadmium API Key from Key Vault",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "APIKey",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Execute Get Cadmium API key Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "GetAPIKey",
+					"value": {
+						"value": "@activity('Execute Get Cadmium API key Pipeline').output.pipelineReturnValue.ReturnValue",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"GetAPIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-01T03:47:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

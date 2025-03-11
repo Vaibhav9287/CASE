@@ -1,0 +1,275 @@
+{
+	"name": "HubSpot GetEmailActivity_V3_API",
+	"properties": {
+		"activities": [
+			{
+				"name": "getToken",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+					},
+					"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+				}
+			},
+			{
+				"name": "Set Access Token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "getToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "accessToken",
+					"value": {
+						"value": "@activity('getToken').output.token",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "get Email Activity Data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Access Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ', variables('accessToken'))",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"AbsoluteUrl": "$.paging.next.link"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"RecordID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_createdate']"
+								},
+								"sink": {
+									"name": "CreateDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_direction_and_unique_id']"
+								},
+								"sink": {
+									"name": "EmailDirection",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_email']"
+								},
+								"sink": {
+									"name": "EmailFromAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_firstname']"
+								},
+								"sink": {
+									"name": "EmailFromFirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_from_lastname']"
+								},
+								"sink": {
+									"name": "EmailFromLastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_html']"
+								},
+								"sink": {
+									"name": "EmailBody",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_status']"
+								},
+								"sink": {
+									"name": "EmailSendStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_subject']"
+								},
+								"sink": {
+									"name": "EmailSubject",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_email']"
+								},
+								"sink": {
+									"name": "EmailToAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_firstname']"
+								},
+								"sink": {
+									"name": "EmailToFirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_to_lastname']"
+								},
+								"sink": {
+									"name": "EmailToLastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lastmodifieddate']"
+								},
+								"sink": {
+									"name": "LastModifiedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_id']"
+								},
+								"sink": {
+									"name": "RecordID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['createdAt']"
+								},
+								"sink": {
+									"name": "createdAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updatedAt']"
+								},
+								"sink": {
+									"name": "updatedAt",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "HubSpot_GetEmailActivity",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "EmailActivity_CDP_Sink_Dataset",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"accessToken": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-04T09:04:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

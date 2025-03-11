@@ -1,0 +1,105 @@
+{
+	"name": "Transfer Presentation Presenter mapping  from staging to PresentationPresenter_PresentationWithPresenter",
+	"properties": {
+		"description": "This pipeline is used to transfer mapping to cadmium fact table.",
+		"activities": [
+			{
+				"name": "Transfer Presenter Presentation Mapping",
+				"description": "This pipeline is used to transfer mapping to cadmium fact table.",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select presenterID, PresentationID From cadmium.presenterStaging ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"PresentationID",
+								"PresenterID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "PresentationID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "PresentationID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "presenterID",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "PresenterID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PrePresentationMappingStagingds",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "cadmiumPresenterPresentation_ds",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"GetAPIKey": {
+				"type": "String"
+			},
+			"APIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-03T12:48:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

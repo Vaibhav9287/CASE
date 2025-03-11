@@ -1,0 +1,21 @@
+{
+	"name": "SFTP_Personify_Weekly_Full_Backup_Source_GetMetaData_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SFTP_Personify_GetBackup_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": "/CASEDB/FULL"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,27 @@
+{
+	"name": "Cadmium_Scorecard_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Cadmium_Scorecard_New_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeUrl": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Cadmim-Scorecard-Dataset"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeUrl",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

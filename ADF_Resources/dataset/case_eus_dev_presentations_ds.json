@@ -1,0 +1,20 @@
+{
+	"name": "case_eus_dev_presentations_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_eus_dev_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester-Dataset"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "Presentation"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
