@@ -1,0 +1,27 @@
+{
+	"name": "HubSpot_GetEmailActivity_InnerLoop_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HubSpot_GetEmailActivity_InnerLoop_LS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"after": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "emails?limit=100&properties=hs_email_from_email,hs_email_from_firstname,hs_email_from_lastname,hs_email_to_email,hs_email_to_firstname,hs_email_to_lastname,hs_email_html,hs_direction_and_unique_id,hs_email_subject,hs_email_status&after=@{dataset().after}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

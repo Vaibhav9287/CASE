@@ -1,0 +1,27 @@
+{
+	"name": "RestAPI_PresentationPresenter_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestAPI_Presentation_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relativeUrlParameter": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester-Dataset"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relativeUrlParameter",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

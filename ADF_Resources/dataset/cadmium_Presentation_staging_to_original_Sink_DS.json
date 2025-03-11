@@ -1,0 +1,1184 @@
+{
+	"name": "cadmium_Presentation_staging_to_original_Sink_DS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_dev_cdp_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester-Dataset"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "EventName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EventID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EventKey",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationStatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationDateAdded",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresentationDateEdited",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CourseName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TrackID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TrackName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionStartTime",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "SessionEndTime",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "SessionBuilderCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionBuilderCode2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionModerators",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SessionDescription",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TimeSlotName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationRoom",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationDate",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresentationTimeStart",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "PresentationTimeEnd",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "PresentationDateTimeStart",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresentationDateTimeEnd",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PresentationNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationNumberSorting",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AbstractText",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationKeywords",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AbstractTextShort",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationTargetAudience",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationTitleShort",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCategory",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Presentationcehours",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationChains",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationRoomID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCapacity",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationFee10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationTitleSorting",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CEExtra1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CEExtra2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CEExtra3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CEExtra4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CEExtra5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TakeAway1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TakeAway2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TakeAway3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TakeAway4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TakeAway5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreReq1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreReq2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreReq3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreReq4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PreReq5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationReviewGroup",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationShareSlides",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationShareAudio",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationUnlockCodePDF",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationDisclosures",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationTopics",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TopicPrimary",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TopicSecondary",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TopicTertiary",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SuperSessionName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SuperSessionTimeStart",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SuperSessionTimeEnd",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IncludeInPrintedGuide",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IncludeInOnlineGuide",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IncludeInApp",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IncludeInReg",
+				"type": "nvarchar"
+			},
+			{
+				"name": "InternetService",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TelephoneService",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ComputerRental",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Transportation",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Photographer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LearningObjective10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WheelchairAccessible",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RegistrationNotes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RegistrationAtDoor",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SeatingArrangements",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SetupNotes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField11",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField12",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField13",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField14",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField15",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField16",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField17",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField18",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField19",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField20",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField21",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField22",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField23",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField24",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField25",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField26",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField27",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField28",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField29",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField30",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField31",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField32",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField33",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField34",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField35",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField36",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField37",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField38",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField39",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField40",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField41",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField42",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField43",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField44",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField45",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField46",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField47",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField48",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField49",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField50",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField51",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField52",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField53",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField54",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField55",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField56",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField57",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField58",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField59",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField60",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField61",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField62",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField63",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField64",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField65",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField66",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField67",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField68",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField69",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField70",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField71",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField72",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField73",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField74",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField75",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField76",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField77",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField78",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField79",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField80",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField81",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField82",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField83",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField84",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField85",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField86",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField87",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField88",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField89",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField90",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField91",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField92",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField93",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField94",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField95",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField96",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField97",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField98",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField99",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField100",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField101",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField102",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField103",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField104",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField105",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField106",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField107",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField108",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField109",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField110",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField111",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField112",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField113",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField114",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField115",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField116",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField117",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField118",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField119",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField120",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField121",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField122",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField123",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField124",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField125",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField126",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField127",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField128",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField129",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField130",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField131",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField132",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField133",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField134",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField135",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField136",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField137",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField138",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField139",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField140",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField141",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField142",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField143",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField144",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField145",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField146",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField147",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField148",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField149",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomPresField150",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SuperSessionOrder",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationEventscribeLink",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits11",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits12",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits13",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits14",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits15",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits16",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits17",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits18",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits19",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits20",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits21",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits22",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits23",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits24",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits25",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits26",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits27",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits28",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits29",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationCredits30",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationAuthors",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PresentationAuthorsInstitutions",
+				"type": "nvarchar"
+			},
+			{
+				"name": "__mj_CreatedAt",
+				"type": "datetimeoffset",
+				"scale": 7
+			},
+			{
+				"name": "__mj_UpdatedAt",
+				"type": "datetimeoffset",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "Presentation"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

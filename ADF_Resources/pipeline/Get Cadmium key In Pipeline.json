@@ -1,0 +1,58 @@
+{
+	"name": "Get Cadmium key In Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "getApiKey",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GET Cadmium API Key from Key Vault",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Cadmium API Key",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "getApiKey",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Key",
+					"value": {
+						"value": "@activity('getApiKey').output.pipelineReturnValue.ReturnValue",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Key": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Unused"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-03T12:51:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

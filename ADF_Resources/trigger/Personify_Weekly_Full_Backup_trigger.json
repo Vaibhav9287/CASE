@@ -1,0 +1,36 @@
+{
+	"name": "Personify_Weekly_Full_Backup_trigger",
+	"properties": {
+		"description": "This trigger run every friday at 8 pm IST to get full backup from client's Sftp server",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Personify_Get_Weekly_Full_Backup_Trigger",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-10-11T10:18:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						20
+					],
+					"weekDays": [
+						"Friday"
+					]
+				}
+			}
+		}
+	}
+}

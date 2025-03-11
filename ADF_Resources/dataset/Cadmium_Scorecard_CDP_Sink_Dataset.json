@@ -1,0 +1,20 @@
+{
+	"name": "Cadmium_Scorecard_CDP_Sink_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_dev_cdp_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Cadmim-Scorecard-Dataset"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "Submission"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "Personify_SFTP_Daily_Diff_backup_trigger",
+	"properties": {
+		"description": "This trigger runs daily to get diff back from sftp and put it into vm",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Personify_Get_Daily_Differential_Backup_Trigger",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-10-11T10:20:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						20
+					]
+				}
+			}
+		}
+	}
+}

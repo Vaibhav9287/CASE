@@ -1,0 +1,13 @@
+{
+	"name": "HubSpot_GetEmailActivity_LS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.hubapi.com/crm/v3/objects/emails?limit=100&properties=hs_email_from_email,hs_email_from_firstname,hs_email_from_lastname,hs_email_to_email,hs_email_to_firstname,hs_email_to_lastname,hs_email_html,hs_direction_and_unique_id,hs_email_subject,hs_email_status",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

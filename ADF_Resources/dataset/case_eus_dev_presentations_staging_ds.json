@@ -1,0 +1,17 @@
+{
+	"name": "case_eus_dev_presentations_staging_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_dev_cdp_ls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "Presentation_staging"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

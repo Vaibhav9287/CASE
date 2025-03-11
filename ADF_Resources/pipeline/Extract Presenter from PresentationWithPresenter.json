@@ -1,0 +1,3515 @@
+{
+	"name": "Extract Presenter from PresentationWithPresenter",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Cadmium API Key",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "GET Cadmium API Key from Key Vault",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "API Key",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Cadmium API Key",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "APIKey",
+					"value": {
+						"value": "@activity('Get Cadmium API Key').output.pipelineReturnValue.ReturnValue",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GetPresenterPresetationURL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "API Key",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "SELECT\n    'HarvesterJsonAPI.asp?APIKey=' + '@{variables('APIKey')}' + '&Method=getPresentationsWithPresenters&eID=' + CAST(Event_ID AS VARCHAR) AS PresentationPresenter_Url\nFROM \n    admin.Event_Details WHERE IsActive = 1;",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_dev_cdp_ds",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For Each",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Truncate Presenter Staging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetPresenterPresetationURL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Extract Presenters",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['ROW']"
+											},
+											"sink": {
+												"name": "ROW"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventName']"
+											},
+											"sink": {
+												"name": "EventName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventKey']"
+											},
+											"sink": {
+												"name": "EventKey"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationID']"
+											},
+											"sink": {
+												"name": "PresentationID"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationStatus']"
+											},
+											"sink": {
+												"name": "PresentationStatus"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDateAdded']"
+											},
+											"sink": {
+												"name": "PresentationDateAdded"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDateEdited']"
+											},
+											"sink": {
+												"name": "PresentationDateEdited"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CourseName']"
+											},
+											"sink": {
+												"name": "CourseName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TrackID']"
+											},
+											"sink": {
+												"name": "TrackID"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TrackName']"
+											},
+											"sink": {
+												"name": "TrackName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionType']"
+											},
+											"sink": {
+												"name": "SessionType"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionID']"
+											},
+											"sink": {
+												"name": "SessionID"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionName']"
+											},
+											"sink": {
+												"name": "SessionName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionStartTime']"
+											},
+											"sink": {
+												"name": "SessionStartTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionEndTime']"
+											},
+											"sink": {
+												"name": "SessionEndTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionBuilderCode']"
+											},
+											"sink": {
+												"name": "SessionBuilderCode"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionBuilderCode2']"
+											},
+											"sink": {
+												"name": "SessionBuilderCode2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionModerators']"
+											},
+											"sink": {
+												"name": "SessionModerators"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SessionDescription']"
+											},
+											"sink": {
+												"name": "SessionDescription"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TimeSlotName']"
+											},
+											"sink": {
+												"name": "TimeSlotName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationRoom']"
+											},
+											"sink": {
+												"name": "PresentationRoom"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDate']"
+											},
+											"sink": {
+												"name": "PresentationDate"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTimeStart']"
+											},
+											"sink": {
+												"name": "PresentationTimeStart"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTimeEnd']"
+											},
+											"sink": {
+												"name": "PresentationTimeEnd"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDateTimeStart']"
+											},
+											"sink": {
+												"name": "PresentationDateTimeStart"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDateTimeEnd']"
+											},
+											"sink": {
+												"name": "PresentationDateTimeEnd"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationNumber']"
+											},
+											"sink": {
+												"name": "PresentationNumber"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationNumberSorting']"
+											},
+											"sink": {
+												"name": "PresentationNumberSorting"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTitle']"
+											},
+											"sink": {
+												"name": "PresentationTitle"
+											}
+										},
+										{
+											"source": {
+												"path": "$['AbstractText']"
+											},
+											"sink": {
+												"name": "AbstractText"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationKeywords']"
+											},
+											"sink": {
+												"name": "PresentationKeywords"
+											}
+										},
+										{
+											"source": {
+												"path": "$['AbstractTextShort']"
+											},
+											"sink": {
+												"name": "AbstractTextShort"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTargetAudience']"
+											},
+											"sink": {
+												"name": "PresentationTargetAudience"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTitleShort']"
+											},
+											"sink": {
+												"name": "PresentationTitleShort"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCategory']"
+											},
+											"sink": {
+												"name": "PresentationCategory"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Presentationcehours']"
+											},
+											"sink": {
+												"name": "Presentationcehours"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationChains']"
+											},
+											"sink": {
+												"name": "PresentationChains"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationRoomID']"
+											},
+											"sink": {
+												"name": "PresentationRoomID"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationType']"
+											},
+											"sink": {
+												"name": "PresentationType"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCapacity']"
+											},
+											"sink": {
+												"name": "PresentationCapacity"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee1']"
+											},
+											"sink": {
+												"name": "PresentationFee1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee2']"
+											},
+											"sink": {
+												"name": "PresentationFee2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee3']"
+											},
+											"sink": {
+												"name": "PresentationFee3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee4']"
+											},
+											"sink": {
+												"name": "PresentationFee4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee5']"
+											},
+											"sink": {
+												"name": "PresentationFee5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee6']"
+											},
+											"sink": {
+												"name": "PresentationFee6"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee7']"
+											},
+											"sink": {
+												"name": "PresentationFee7"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee8']"
+											},
+											"sink": {
+												"name": "PresentationFee8"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee9']"
+											},
+											"sink": {
+												"name": "PresentationFee9"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationFee10']"
+											},
+											"sink": {
+												"name": "PresentationFee10"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTitleSorting']"
+											},
+											"sink": {
+												"name": "PresentationTitleSorting"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CEExtra1']"
+											},
+											"sink": {
+												"name": "CEExtra1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CEExtra2']"
+											},
+											"sink": {
+												"name": "CEExtra2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CEExtra3']"
+											},
+											"sink": {
+												"name": "CEExtra3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CEExtra4']"
+											},
+											"sink": {
+												"name": "CEExtra4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CEExtra5']"
+											},
+											"sink": {
+												"name": "CEExtra5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TakeAway1']"
+											},
+											"sink": {
+												"name": "TakeAway1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TakeAway2']"
+											},
+											"sink": {
+												"name": "TakeAway2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TakeAway3']"
+											},
+											"sink": {
+												"name": "TakeAway3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TakeAway4']"
+											},
+											"sink": {
+												"name": "TakeAway4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TakeAway5']"
+											},
+											"sink": {
+												"name": "TakeAway5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PreReq1']"
+											},
+											"sink": {
+												"name": "PreReq1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PreReq2']"
+											},
+											"sink": {
+												"name": "PreReq2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PreReq3']"
+											},
+											"sink": {
+												"name": "PreReq3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PreReq4']"
+											},
+											"sink": {
+												"name": "PreReq4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PreReq5']"
+											},
+											"sink": {
+												"name": "PreReq5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationReviewGroup']"
+											},
+											"sink": {
+												"name": "PresentationReviewGroup"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationShareSlides']"
+											},
+											"sink": {
+												"name": "PresentationShareSlides"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationShareAudio']"
+											},
+											"sink": {
+												"name": "PresentationShareAudio"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationUnlockCodePDF']"
+											},
+											"sink": {
+												"name": "PresentationUnlockCodePDF"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationDisclosures']"
+											},
+											"sink": {
+												"name": "PresentationDisclosures"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationTopics']"
+											},
+											"sink": {
+												"name": "PresentationTopics"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TopicPrimary']"
+											},
+											"sink": {
+												"name": "TopicPrimary"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TopicSecondary']"
+											},
+											"sink": {
+												"name": "TopicSecondary"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TopicTertiary']"
+											},
+											"sink": {
+												"name": "TopicTertiary"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SuperSessionName']"
+											},
+											"sink": {
+												"name": "SuperSessionName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SuperSessionTimeStart']"
+											},
+											"sink": {
+												"name": "SuperSessionTimeStart"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SuperSessionTimeEnd']"
+											},
+											"sink": {
+												"name": "SuperSessionTimeEnd"
+											}
+										},
+										{
+											"source": {
+												"path": "$['IncludeInPrintedGuide']"
+											},
+											"sink": {
+												"name": "IncludeInPrintedGuide"
+											}
+										},
+										{
+											"source": {
+												"path": "$['IncludeInOnlineGuide']"
+											},
+											"sink": {
+												"name": "IncludeInOnlineGuide"
+											}
+										},
+										{
+											"source": {
+												"path": "$['IncludeInApp']"
+											},
+											"sink": {
+												"name": "IncludeInApp"
+											}
+										},
+										{
+											"source": {
+												"path": "$['IncludeInReg']"
+											},
+											"sink": {
+												"name": "IncludeInReg"
+											}
+										},
+										{
+											"source": {
+												"path": "$['InternetService']"
+											},
+											"sink": {
+												"name": "InternetService"
+											}
+										},
+										{
+											"source": {
+												"path": "$['TelephoneService']"
+											},
+											"sink": {
+												"name": "TelephoneService"
+											}
+										},
+										{
+											"source": {
+												"path": "$['ComputerRental']"
+											},
+											"sink": {
+												"name": "ComputerRental"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Transportation']"
+											},
+											"sink": {
+												"name": "Transportation"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Photographer']"
+											},
+											"sink": {
+												"name": "Photographer"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective1']"
+											},
+											"sink": {
+												"name": "LearningObjective1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective2']"
+											},
+											"sink": {
+												"name": "LearningObjective2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective3']"
+											},
+											"sink": {
+												"name": "LearningObjective3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective4']"
+											},
+											"sink": {
+												"name": "LearningObjective4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective5']"
+											},
+											"sink": {
+												"name": "LearningObjective5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective6']"
+											},
+											"sink": {
+												"name": "LearningObjective6"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective7']"
+											},
+											"sink": {
+												"name": "LearningObjective7"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective8']"
+											},
+											"sink": {
+												"name": "LearningObjective8"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective9']"
+											},
+											"sink": {
+												"name": "LearningObjective9"
+											}
+										},
+										{
+											"source": {
+												"path": "$['LearningObjective10']"
+											},
+											"sink": {
+												"name": "LearningObjective10"
+											}
+										},
+										{
+											"source": {
+												"path": "$['WheelchairAccessible']"
+											},
+											"sink": {
+												"name": "WheelchairAccessible"
+											}
+										},
+										{
+											"source": {
+												"path": "$['RegistrationNotes']"
+											},
+											"sink": {
+												"name": "RegistrationNotes"
+											}
+										},
+										{
+											"source": {
+												"path": "$['RegistrationAtDoor']"
+											},
+											"sink": {
+												"name": "RegistrationAtDoor"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SeatingArrangements']"
+											},
+											"sink": {
+												"name": "SeatingArrangements"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SetupNotes']"
+											},
+											"sink": {
+												"name": "SetupNotes"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField1']"
+											},
+											"sink": {
+												"name": "CustomPresField1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField2']"
+											},
+											"sink": {
+												"name": "CustomPresField2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField3']"
+											},
+											"sink": {
+												"name": "CustomPresField3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField4']"
+											},
+											"sink": {
+												"name": "CustomPresField4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField5']"
+											},
+											"sink": {
+												"name": "CustomPresField5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField6']"
+											},
+											"sink": {
+												"name": "CustomPresField6"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField7']"
+											},
+											"sink": {
+												"name": "CustomPresField7"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField8']"
+											},
+											"sink": {
+												"name": "CustomPresField8"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField9']"
+											},
+											"sink": {
+												"name": "CustomPresField9"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField10']"
+											},
+											"sink": {
+												"name": "CustomPresField10"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField11']"
+											},
+											"sink": {
+												"name": "CustomPresField11"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField12']"
+											},
+											"sink": {
+												"name": "CustomPresField12"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField13']"
+											},
+											"sink": {
+												"name": "CustomPresField13"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField14']"
+											},
+											"sink": {
+												"name": "CustomPresField14"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField15']"
+											},
+											"sink": {
+												"name": "CustomPresField15"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField16']"
+											},
+											"sink": {
+												"name": "CustomPresField16"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField17']"
+											},
+											"sink": {
+												"name": "CustomPresField17"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField18']"
+											},
+											"sink": {
+												"name": "CustomPresField18"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField19']"
+											},
+											"sink": {
+												"name": "CustomPresField19"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField20']"
+											},
+											"sink": {
+												"name": "CustomPresField20"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField21']"
+											},
+											"sink": {
+												"name": "CustomPresField21"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField22']"
+											},
+											"sink": {
+												"name": "CustomPresField22"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField23']"
+											},
+											"sink": {
+												"name": "CustomPresField23"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField24']"
+											},
+											"sink": {
+												"name": "CustomPresField24"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField25']"
+											},
+											"sink": {
+												"name": "CustomPresField25"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField26']"
+											},
+											"sink": {
+												"name": "CustomPresField26"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField27']"
+											},
+											"sink": {
+												"name": "CustomPresField27"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField28']"
+											},
+											"sink": {
+												"name": "CustomPresField28"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField29']"
+											},
+											"sink": {
+												"name": "CustomPresField29"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField30']"
+											},
+											"sink": {
+												"name": "CustomPresField30"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField31']"
+											},
+											"sink": {
+												"name": "CustomPresField31"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField32']"
+											},
+											"sink": {
+												"name": "CustomPresField32"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField33']"
+											},
+											"sink": {
+												"name": "CustomPresField33"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField34']"
+											},
+											"sink": {
+												"name": "CustomPresField34"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField35']"
+											},
+											"sink": {
+												"name": "CustomPresField35"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField36']"
+											},
+											"sink": {
+												"name": "CustomPresField36"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField37']"
+											},
+											"sink": {
+												"name": "CustomPresField37"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField38']"
+											},
+											"sink": {
+												"name": "CustomPresField38"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField39']"
+											},
+											"sink": {
+												"name": "CustomPresField39"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField40']"
+											},
+											"sink": {
+												"name": "CustomPresField40"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField41']"
+											},
+											"sink": {
+												"name": "CustomPresField41"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField42']"
+											},
+											"sink": {
+												"name": "CustomPresField42"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField43']"
+											},
+											"sink": {
+												"name": "CustomPresField43"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField44']"
+											},
+											"sink": {
+												"name": "CustomPresField44"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField45']"
+											},
+											"sink": {
+												"name": "CustomPresField45"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField46']"
+											},
+											"sink": {
+												"name": "CustomPresField46"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField47']"
+											},
+											"sink": {
+												"name": "CustomPresField47"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField48']"
+											},
+											"sink": {
+												"name": "CustomPresField48"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField49']"
+											},
+											"sink": {
+												"name": "CustomPresField49"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField50']"
+											},
+											"sink": {
+												"name": "CustomPresField50"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField51']"
+											},
+											"sink": {
+												"name": "CustomPresField51"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField52']"
+											},
+											"sink": {
+												"name": "CustomPresField52"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField53']"
+											},
+											"sink": {
+												"name": "CustomPresField53"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField54']"
+											},
+											"sink": {
+												"name": "CustomPresField54"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField55']"
+											},
+											"sink": {
+												"name": "CustomPresField55"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField56']"
+											},
+											"sink": {
+												"name": "CustomPresField56"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField57']"
+											},
+											"sink": {
+												"name": "CustomPresField57"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField58']"
+											},
+											"sink": {
+												"name": "CustomPresField58"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField59']"
+											},
+											"sink": {
+												"name": "CustomPresField59"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField60']"
+											},
+											"sink": {
+												"name": "CustomPresField60"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField61']"
+											},
+											"sink": {
+												"name": "CustomPresField61"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField62']"
+											},
+											"sink": {
+												"name": "CustomPresField62"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField63']"
+											},
+											"sink": {
+												"name": "CustomPresField63"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField64']"
+											},
+											"sink": {
+												"name": "CustomPresField64"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField65']"
+											},
+											"sink": {
+												"name": "CustomPresField65"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField66']"
+											},
+											"sink": {
+												"name": "CustomPresField66"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField67']"
+											},
+											"sink": {
+												"name": "CustomPresField67"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField68']"
+											},
+											"sink": {
+												"name": "CustomPresField68"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField69']"
+											},
+											"sink": {
+												"name": "CustomPresField69"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField70']"
+											},
+											"sink": {
+												"name": "CustomPresField70"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField71']"
+											},
+											"sink": {
+												"name": "CustomPresField71"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField72']"
+											},
+											"sink": {
+												"name": "CustomPresField72"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField73']"
+											},
+											"sink": {
+												"name": "CustomPresField73"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField74']"
+											},
+											"sink": {
+												"name": "CustomPresField74"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField75']"
+											},
+											"sink": {
+												"name": "CustomPresField75"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField76']"
+											},
+											"sink": {
+												"name": "CustomPresField76"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField77']"
+											},
+											"sink": {
+												"name": "CustomPresField77"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField78']"
+											},
+											"sink": {
+												"name": "CustomPresField78"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField79']"
+											},
+											"sink": {
+												"name": "CustomPresField79"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField80']"
+											},
+											"sink": {
+												"name": "CustomPresField80"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField81']"
+											},
+											"sink": {
+												"name": "CustomPresField81"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField82']"
+											},
+											"sink": {
+												"name": "CustomPresField82"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField83']"
+											},
+											"sink": {
+												"name": "CustomPresField83"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField84']"
+											},
+											"sink": {
+												"name": "CustomPresField84"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField85']"
+											},
+											"sink": {
+												"name": "CustomPresField85"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField86']"
+											},
+											"sink": {
+												"name": "CustomPresField86"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField87']"
+											},
+											"sink": {
+												"name": "CustomPresField87"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField88']"
+											},
+											"sink": {
+												"name": "CustomPresField88"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField89']"
+											},
+											"sink": {
+												"name": "CustomPresField89"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField90']"
+											},
+											"sink": {
+												"name": "CustomPresField90"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField91']"
+											},
+											"sink": {
+												"name": "CustomPresField91"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField92']"
+											},
+											"sink": {
+												"name": "CustomPresField92"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField93']"
+											},
+											"sink": {
+												"name": "CustomPresField93"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField94']"
+											},
+											"sink": {
+												"name": "CustomPresField94"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField95']"
+											},
+											"sink": {
+												"name": "CustomPresField95"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField96']"
+											},
+											"sink": {
+												"name": "CustomPresField96"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField97']"
+											},
+											"sink": {
+												"name": "CustomPresField97"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField98']"
+											},
+											"sink": {
+												"name": "CustomPresField98"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField99']"
+											},
+											"sink": {
+												"name": "CustomPresField99"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField100']"
+											},
+											"sink": {
+												"name": "CustomPresField100"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField101']"
+											},
+											"sink": {
+												"name": "CustomPresField101"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField102']"
+											},
+											"sink": {
+												"name": "CustomPresField102"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField103']"
+											},
+											"sink": {
+												"name": "CustomPresField103"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField104']"
+											},
+											"sink": {
+												"name": "CustomPresField104"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField105']"
+											},
+											"sink": {
+												"name": "CustomPresField105"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField106']"
+											},
+											"sink": {
+												"name": "CustomPresField106"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField107']"
+											},
+											"sink": {
+												"name": "CustomPresField107"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField108']"
+											},
+											"sink": {
+												"name": "CustomPresField108"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField109']"
+											},
+											"sink": {
+												"name": "CustomPresField109"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField110']"
+											},
+											"sink": {
+												"name": "CustomPresField110"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField111']"
+											},
+											"sink": {
+												"name": "CustomPresField111"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField112']"
+											},
+											"sink": {
+												"name": "CustomPresField112"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField113']"
+											},
+											"sink": {
+												"name": "CustomPresField113"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField114']"
+											},
+											"sink": {
+												"name": "CustomPresField114"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField115']"
+											},
+											"sink": {
+												"name": "CustomPresField115"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField116']"
+											},
+											"sink": {
+												"name": "CustomPresField116"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField117']"
+											},
+											"sink": {
+												"name": "CustomPresField117"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField118']"
+											},
+											"sink": {
+												"name": "CustomPresField118"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField119']"
+											},
+											"sink": {
+												"name": "CustomPresField119"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField120']"
+											},
+											"sink": {
+												"name": "CustomPresField120"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField121']"
+											},
+											"sink": {
+												"name": "CustomPresField121"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField122']"
+											},
+											"sink": {
+												"name": "CustomPresField122"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField123']"
+											},
+											"sink": {
+												"name": "CustomPresField123"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField124']"
+											},
+											"sink": {
+												"name": "CustomPresField124"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField125']"
+											},
+											"sink": {
+												"name": "CustomPresField125"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField126']"
+											},
+											"sink": {
+												"name": "CustomPresField126"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField127']"
+											},
+											"sink": {
+												"name": "CustomPresField127"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField128']"
+											},
+											"sink": {
+												"name": "CustomPresField128"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField129']"
+											},
+											"sink": {
+												"name": "CustomPresField129"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField130']"
+											},
+											"sink": {
+												"name": "CustomPresField130"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField131']"
+											},
+											"sink": {
+												"name": "CustomPresField131"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField132']"
+											},
+											"sink": {
+												"name": "CustomPresField132"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField133']"
+											},
+											"sink": {
+												"name": "CustomPresField133"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField134']"
+											},
+											"sink": {
+												"name": "CustomPresField134"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField135']"
+											},
+											"sink": {
+												"name": "CustomPresField135"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField136']"
+											},
+											"sink": {
+												"name": "CustomPresField136"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField137']"
+											},
+											"sink": {
+												"name": "CustomPresField137"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField138']"
+											},
+											"sink": {
+												"name": "CustomPresField138"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField139']"
+											},
+											"sink": {
+												"name": "CustomPresField139"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField140']"
+											},
+											"sink": {
+												"name": "CustomPresField140"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField141']"
+											},
+											"sink": {
+												"name": "CustomPresField141"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField142']"
+											},
+											"sink": {
+												"name": "CustomPresField142"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField143']"
+											},
+											"sink": {
+												"name": "CustomPresField143"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField144']"
+											},
+											"sink": {
+												"name": "CustomPresField144"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField145']"
+											},
+											"sink": {
+												"name": "CustomPresField145"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField146']"
+											},
+											"sink": {
+												"name": "CustomPresField146"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField147']"
+											},
+											"sink": {
+												"name": "CustomPresField147"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField148']"
+											},
+											"sink": {
+												"name": "CustomPresField148"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField149']"
+											},
+											"sink": {
+												"name": "CustomPresField149"
+											}
+										},
+										{
+											"source": {
+												"path": "$['CustomPresField150']"
+											},
+											"sink": {
+												"name": "CustomPresField150"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SuperSessionOrder']"
+											},
+											"sink": {
+												"name": "SuperSessionOrder"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationEventscribeLink']"
+											},
+											"sink": {
+												"name": "PresentationEventscribeLink"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits1']"
+											},
+											"sink": {
+												"name": "PresentationCredits1"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits2']"
+											},
+											"sink": {
+												"name": "PresentationCredits2"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits3']"
+											},
+											"sink": {
+												"name": "PresentationCredits3"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits4']"
+											},
+											"sink": {
+												"name": "PresentationCredits4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits5']"
+											},
+											"sink": {
+												"name": "PresentationCredits5"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits6']"
+											},
+											"sink": {
+												"name": "PresentationCredits6"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits7']"
+											},
+											"sink": {
+												"name": "PresentationCredits7"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits8']"
+											},
+											"sink": {
+												"name": "PresentationCredits8"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits9']"
+											},
+											"sink": {
+												"name": "PresentationCredits9"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits10']"
+											},
+											"sink": {
+												"name": "PresentationCredits10"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits11']"
+											},
+											"sink": {
+												"name": "PresentationCredits11"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits12']"
+											},
+											"sink": {
+												"name": "PresentationCredits12"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits13']"
+											},
+											"sink": {
+												"name": "PresentationCredits13"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits14']"
+											},
+											"sink": {
+												"name": "PresentationCredits14"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits15']"
+											},
+											"sink": {
+												"name": "PresentationCredits15"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits16']"
+											},
+											"sink": {
+												"name": "PresentationCredits16"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits17']"
+											},
+											"sink": {
+												"name": "PresentationCredits17"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits18']"
+											},
+											"sink": {
+												"name": "PresentationCredits18"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits19']"
+											},
+											"sink": {
+												"name": "PresentationCredits19"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits20']"
+											},
+											"sink": {
+												"name": "PresentationCredits20"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits21']"
+											},
+											"sink": {
+												"name": "PresentationCredits21"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits22']"
+											},
+											"sink": {
+												"name": "PresentationCredits22"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits23']"
+											},
+											"sink": {
+												"name": "PresentationCredits23"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits24']"
+											},
+											"sink": {
+												"name": "PresentationCredits24"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits25']"
+											},
+											"sink": {
+												"name": "PresentationCredits25"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits26']"
+											},
+											"sink": {
+												"name": "PresentationCredits26"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits27']"
+											},
+											"sink": {
+												"name": "PresentationCredits27"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits28']"
+											},
+											"sink": {
+												"name": "PresentationCredits28"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits29']"
+											},
+											"sink": {
+												"name": "PresentationCredits29"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationCredits30']"
+											},
+											"sink": {
+												"name": "PresentationCredits30"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationAuthors']"
+											},
+											"sink": {
+												"name": "PresentationAuthors"
+											}
+										},
+										{
+											"source": {
+												"path": "$['PresentationAuthorsInstitutions']"
+											},
+											"sink": {
+												"name": "PresentationAuthorsInstitutions"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterID']"
+											},
+											"sink": {
+												"name": "PresenterID"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterDateAdded"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterDateEdited"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPrefix']"
+											},
+											"sink": {
+												"name": "PresenterPrefix"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterFirstName']"
+											},
+											"sink": {
+												"name": "PresenterFirstName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMiddleInitial']"
+											},
+											"sink": {
+												"name": "PresenterMiddleInitial"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterLastName']"
+											},
+											"sink": {
+												"name": "PresenterLastName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSuffix2']"
+											},
+											"sink": {
+												"name": "PresenterSuffix2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSuffix']"
+											},
+											"sink": {
+												"name": "PresenterSuffix"
+											}
+										},
+										{
+											"source": {
+												"path": "['pronoun']"
+											},
+											"sink": {
+												"name": "pronoun"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPosition']"
+											},
+											"sink": {
+												"name": "PresenterPosition"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterOrganization']"
+											},
+											"sink": {
+												"name": "PresenterOrganization"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSpecialty']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSpecialtyOther']"
+											},
+											"sink": {
+												"name": "PresenterSpecialtyOther"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSpecialty2']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterSpecialty2Other']"
+											},
+											"sink": {
+												"name": "PresenterSpecialty2Other"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMedicalCenter']"
+											},
+											"sink": {
+												"name": "PresenterMedicalCenter"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterClinicalMedicalTitle']"
+											},
+											"sink": {
+												"name": "PresenterClinicalMedicalTitle"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAcademicTitle']"
+											},
+											"sink": {
+												"name": "PresenterAcademicTitle"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAcademicInstitution']"
+											},
+											"sink": {
+												"name": "PresenterAcademicInstitution"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterOtherAffiliations']"
+											},
+											"sink": {
+												"name": "PresenterOtherAffiliations"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEmail']"
+											},
+											"sink": {
+												"name": "PresenterEmail"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAddress1']"
+											},
+											"sink": {
+												"name": "PresenterAddress1"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAddress2']"
+											},
+											"sink": {
+												"name": "PresenterAddress2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAddress3']"
+											},
+											"sink": {
+												"name": "PresenterAddress3"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCity']"
+											},
+											"sink": {
+												"name": "PresenterCity"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterState']"
+											},
+											"sink": {
+												"name": "PresenterState"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterZip']"
+											},
+											"sink": {
+												"name": "PresenterZip"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCountry']"
+											},
+											"sink": {
+												"name": "PresenterCountry"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterContinent']"
+											},
+											"sink": {
+												"name": "PresenterContinent"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterTelephoneOffice']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneOffice"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterTelephoneCell']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneCell"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterTelephoneFax']"
+											},
+											"sink": {
+												"name": "PresenterTelephoneFax"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAssistantName']"
+											},
+											"sink": {
+												"name": "PresenterAssistantName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAssistantEmail']"
+											},
+											"sink": {
+												"name": "PresenterAssistantEmail"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterAssistantTelephone']"
+											},
+											"sink": {
+												"name": "PresenterAssistantTelephone"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBiographyText']"
+											},
+											"sink": {
+												"name": "PresenterBiographyText"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBiographyDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterBiographyDateAdded"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBiographyDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterBiographyDateEdited"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBioSketchText']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchText"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBioSketchDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchDateAdded"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBioSketchDateEdited']"
+											},
+											"sink": {
+												"name": "PresenterBioSketchDateEdited"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoOriginalName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOriginalName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoWebFileName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoWebFileName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoFileName']"
+											},
+											"sink": {
+												"name": "PresenterPhotoFileName"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoSize']"
+											},
+											"sink": {
+												"name": "PresenterPhotoSize"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoExtension']"
+											},
+											"sink": {
+												"name": "PresenterPhotoExtension"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoWidth']"
+											},
+											"sink": {
+												"name": "PresenterPhotoWidth"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoHeight']"
+											},
+											"sink": {
+												"name": "PresenterPhotoHeight"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoDateAdded']"
+											},
+											"sink": {
+												"name": "PresenterPhotoDateAdded"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoDeleteLevel']"
+											},
+											"sink": {
+												"name": "PresenterPhotoDeleteLevel"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoOptOut']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOptOut"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPhotoOptOutDate']"
+											},
+											"sink": {
+												"name": "PresenterPhotoOptOutDate"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterNotes']"
+											},
+											"sink": {
+												"name": "PresenterNotes"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterDeleteStatus']"
+											},
+											"sink": {
+												"name": "PresenterDeleteStatus"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCategory']"
+											},
+											"sink": {
+												"name": "PresenterCategory"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresentationAuthorList']"
+											},
+											"sink": {
+												"name": "PresentationAuthorList"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEmailShare']"
+											},
+											"sink": {
+												"name": "PresenterEmailShare"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterStudentYesNo']"
+											},
+											"sink": {
+												"name": "PresenterStudentYesNo"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterDepartment']"
+											},
+											"sink": {
+												"name": "PresenterDepartment"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterTwitterHandle']"
+											},
+											"sink": {
+												"name": "PresenterTwitterHandle"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterFacebook']"
+											},
+											"sink": {
+												"name": "PresenterFacebook"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterLinkedIn']"
+											},
+											"sink": {
+												"name": "PresenterLinkedIn"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMemberStatus']"
+											},
+											"sink": {
+												"name": "PresenterMemberStatus"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMemberLevel']"
+											},
+											"sink": {
+												"name": "PresenterMemberLevel"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMemberExpiration']"
+											},
+											"sink": {
+												"name": "PresenterMemberExpiration"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCompensationStatus']"
+											},
+											"sink": {
+												"name": "PresenterCompensationStatus"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterMemberNumber']"
+											},
+											"sink": {
+												"name": "PresenterMemberNumber"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField1']"
+											},
+											"sink": {
+												"name": "PresenterCustomField1"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField2']"
+											},
+											"sink": {
+												"name": "PresenterCustomField2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField3']"
+											},
+											"sink": {
+												"name": "PresenterCustomField3"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField4']"
+											},
+											"sink": {
+												"name": "PresenterCustomField4"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField5']"
+											},
+											"sink": {
+												"name": "PresenterCustomField5"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField6']"
+											},
+											"sink": {
+												"name": "PresenterCustomField6"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField7']"
+											},
+											"sink": {
+												"name": "PresenterCustomField7"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField8']"
+											},
+											"sink": {
+												"name": "PresenterCustomField8"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField9']"
+											},
+											"sink": {
+												"name": "PresenterCustomField9"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField10']"
+											},
+											"sink": {
+												"name": "PresenterCustomField10"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField11']"
+											},
+											"sink": {
+												"name": "PresenterCustomField11"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField12']"
+											},
+											"sink": {
+												"name": "PresenterCustomField12"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField13']"
+											},
+											"sink": {
+												"name": "PresenterCustomField13"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField14']"
+											},
+											"sink": {
+												"name": "PresenterCustomField14"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField15']"
+											},
+											"sink": {
+												"name": "PresenterCustomField15"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField16']"
+											},
+											"sink": {
+												"name": "PresenterCustomField16"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField17']"
+											},
+											"sink": {
+												"name": "PresenterCustomField17"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField18']"
+											},
+											"sink": {
+												"name": "PresenterCustomField18"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField19']"
+											},
+											"sink": {
+												"name": "PresenterCustomField19"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField20']"
+											},
+											"sink": {
+												"name": "PresenterCustomField20"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField21']"
+											},
+											"sink": {
+												"name": "PresenterCustomField21"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField22']"
+											},
+											"sink": {
+												"name": "PresenterCustomField22"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField23']"
+											},
+											"sink": {
+												"name": "PresenterCustomField23"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField24']"
+											},
+											"sink": {
+												"name": "PresenterCustomField24"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField25']"
+											},
+											"sink": {
+												"name": "PresenterCustomField25"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField26']"
+											},
+											"sink": {
+												"name": "PresenterCustomField26"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField27']"
+											},
+											"sink": {
+												"name": "PresenterCustomField27"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField28']"
+											},
+											"sink": {
+												"name": "PresenterCustomField28"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField29']"
+											},
+											"sink": {
+												"name": "PresenterCustomField29"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterCustomField30']"
+											},
+											"sink": {
+												"name": "PresenterCustomField30"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterProfessionalNumber']"
+											},
+											"sink": {
+												"name": "PresenterProfessionalNumber"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresentationRosterRole']"
+											},
+											"sink": {
+												"name": "PresentationRosterRole"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresentationRosterOrder']"
+											},
+											"sink": {
+												"name": "PresentationRosterOrder"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterTwitter']"
+											},
+											"sink": {
+												"name": "PresenterTwitter"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterInstagram']"
+											},
+											"sink": {
+												"name": "PresenterInstagram"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterPinterest']"
+											},
+											"sink": {
+												"name": "PresenterPinterest"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterYouTube']"
+											},
+											"sink": {
+												"name": "PresenterYouTube"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterGooglePlus']"
+											},
+											"sink": {
+												"name": "PresenterGooglePlus"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterWebsite']"
+											},
+											"sink": {
+												"name": "PresenterWebsite"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterWebsite2']"
+											},
+											"sink": {
+												"name": "PresenterWebsite2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterBlog']"
+											},
+											"sink": {
+												"name": "PresenterBlog"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterRosterFlag']"
+											},
+											"sink": {
+												"name": "PresenterRosterFlag"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsQuestion1']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion1"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsQuestion2']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion2"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsQuestion3']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion3"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsQuestion4']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion4"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsQuestion5']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsQuestion5"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsOverallRoles']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsOverallRoles"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField1']"
+											},
+											"sink": {
+												"name": "pedCustomField1"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField2']"
+											},
+											"sink": {
+												"name": "pedCustomField2"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField3']"
+											},
+											"sink": {
+												"name": "pedCustomField3"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField4']"
+											},
+											"sink": {
+												"name": "pedCustomField4"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField5']"
+											},
+											"sink": {
+												"name": "pedCustomField5"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField6']"
+											},
+											"sink": {
+												"name": "pedCustomField6"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField7']"
+											},
+											"sink": {
+												"name": "pedCustomField7"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField8']"
+											},
+											"sink": {
+												"name": "pedCustomField8"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField9']"
+											},
+											"sink": {
+												"name": "pedCustomField9"
+											}
+										},
+										{
+											"source": {
+												"path": "['pedCustomField10']"
+											},
+											"sink": {
+												"name": "pedCustomField10"
+											}
+										},
+										{
+											"source": {
+												"path": "['PresenterEventDetailsDisclosures']"
+											},
+											"sink": {
+												"name": "PresenterEventDetailsDisclosures"
+											}
+										}
+									],
+									"collectionReference": "$['Presenters']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "extractPresenters",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeURL": {
+											"value": "@item().PresentationPresenter_Url",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "cadmiumPresenterStaging",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Truncate Presenter Staging",
+				"description": "To truncate table Presenter Staging",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "GetPresenterPresetationURL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "SP_TruncatepresenterStaging"
+				},
+				"linkedServiceName": {
+					"referenceName": "case_dev_cdp_ls",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"GetAPIKey": {
+				"type": "String"
+			},
+			"APIKey": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-EducationHarvester"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-03T12:48:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

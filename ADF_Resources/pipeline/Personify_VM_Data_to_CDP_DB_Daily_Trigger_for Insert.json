@@ -1,0 +1,165 @@
+{
+	"name": "Personify_VM_Data_to_CDP_DB_Daily_Trigger_for Insert",
+	"properties": {
+		"description": "This pipeline will take data from VM DB and migrate it to MJ CDP. For two tables only and will work for truncate and insert",
+		"activities": [
+			{
+				"name": "Get_Personify_Src_dest_tables_details",
+				"description": "To read data from database.",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "truncate Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select  Source_Schema,[Source_Table],[Dest_Schema],  Dest_Table, UpsertKey_Column From  admin.PersonifyDBSource_Dest_Tables where UpsertKey_Column = 'Not Known'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_dev_cdp_ds",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Loop_Over_Personify_SRC_DEST_Tables",
+				"description": "To loop over personify Src tables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_Personify_Src_dest_tables_details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Personify_Src_dest_tables_details').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy Data from VM Personify to cDP Dev",
+							"description": "To copy data from Personify intermidiate server to Personity",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "VM_Personfity_SQL_connect_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"sourceTable": {
+											"value": "@item().Source_Table",
+											"type": "Expression"
+										},
+										"sourceSchema": {
+											"value": "@item().Source_Schema",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "case_eus_dev_dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"destSchema": {
+											"value": "@item().Dest_Schema",
+											"type": "Expression"
+										},
+										"destTableName": {
+											"value": "@item().Dest_Table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "truncate Tables",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "case_dev_cdp_ls",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "TRUNCATE TABLE personify.CASE_COMMIETTEE_VW;\nTRUNCATE TABLE personify.CASE_Order_detail_vw;\n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-10T06:28:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,131 @@
+{
+	"name": "Batching DEMO child",
+	"properties": {
+		"activities": [
+			{
+				"name": "getAPIURL_in_Batch",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "\nSELECT \n    'HarvesterJsonAPI.asp?APIKey=9i82XsxtKgdt&Method=getPresentations&eID=' + CAST(Event_ID AS VARCHAR) AS Presentations_Url\nFROM \n    admin.Event_Details WHERE BatchID = @{pipeline().parameters.BatchID}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_eus_dev_Process_Batch",
+						"type": "DatasetReference",
+						"parameters": {
+							"BatchID": {
+								"value": "@{pipeline().parameters.BatchID}",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "LoopOverAPI_URL",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getAPIURL_in_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getAPIURL_in_Batch').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"PresentationID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "get_presentations_rest_api_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeURL": {
+											"value": "@item().Presentations_Url",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "case_eus_dev_presentations_ds",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"BatchID": {
+				"type": "int"
+			}
+		},
+		"folder": {
+			"name": "Batch POC"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-13T05:26:32Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

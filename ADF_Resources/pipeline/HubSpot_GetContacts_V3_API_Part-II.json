@@ -1,0 +1,5533 @@
+{
+	"name": "HubSpot_GetContacts_V3_API_Part-II",
+	"properties": {
+		"description": "To get Contacts from Hubspot using API",
+		"activities": [
+			{
+				"name": "CopyHubSpotContacts",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "tokenExpire",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.23:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ', variables('Token'))",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"RecordID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "RecordID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['address']"
+								},
+								"sink": {
+									"name": "StreetAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['address_2']"
+								},
+								"sink": {
+									"name": "StreetAddress2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['address_status']"
+								},
+								"sink": {
+									"name": "AddressStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['address_type']"
+								},
+								"sink": {
+									"name": "AddressType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['allow_email_flag']"
+								},
+								"sink": {
+									"name": "AllowsEmail",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['allows_phone']"
+								},
+								"sink": {
+									"name": "AllowsPhone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['allows_solicitation']"
+								},
+								"sink": {
+									"name": "AllowsSolicitation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['annualrevenue']"
+								},
+								"sink": {
+									"name": "AnnualRevenue",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['case_district_2']"
+								},
+								"sink": {
+									"name": "CaseDistrict",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['case_region_2']"
+								},
+								"sink": {
+									"name": "CaseRegion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['chief_position']"
+								},
+								"sink": {
+									"name": "ChiefPosition",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['city']"
+								},
+								"sink": {
+									"name": "City",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['closedate']"
+								},
+								"sink": {
+									"name": "CloseDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['company']"
+								},
+								"sink": {
+									"name": "CompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['company_size']"
+								},
+								"sink": {
+									"name": "CompanySize",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['constituency']"
+								},
+								"sink": {
+									"name": "Constituency",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['country']"
+								},
+								"sink": {
+									"name": "Countryregion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['createdate']"
+								},
+								"sink": {
+									"name": "CreateDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['currentlyinworkflow']"
+								},
+								"sink": {
+									"name": "CurrentlyInWorkflow",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['customer_class_2']"
+								},
+								"sink": {
+									"name": "CustomerClass",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['date_of_birth']"
+								},
+								"sink": {
+									"name": "DateOfBirth",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['days_to_close']"
+								},
+								"sink": {
+									"name": "DaysToClose",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['degree']"
+								},
+								"sink": {
+									"name": "Degree",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['dues_basis__fte_']"
+								},
+								"sink": {
+									"name": "DuesBasisFte",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['email']"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['employer_customer_class_code']"
+								},
+								"sink": {
+									"name": "EmployerCustomerClassCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['engagements_last_meeting_booked']"
+								},
+								"sink": {
+									"name": "DateOfLastMeetingBookedInMeetingsTool",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['engagements_last_meeting_booked_campaign']"
+								},
+								"sink": {
+									"name": "CampaignOfLastBookingInMeetingsTool",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['engagements_last_meeting_booked_medium']"
+								},
+								"sink": {
+									"name": "MediumOfLastBookingInMeetingsTool",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['engagements_last_meeting_booked_source']"
+								},
+								"sink": {
+									"name": "SourceOfLastBookingInMeetingsTool",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ethnicity_code']"
+								},
+								"sink": {
+									"name": "EthnicityCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['fax']"
+								},
+								"sink": {
+									"name": "FaxNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['field_of_study']"
+								},
+								"sink": {
+									"name": "FieldOfStudy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['first_conversion_date']"
+								},
+								"sink": {
+									"name": "FirstConversionDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['first_conversion_event_name']"
+								},
+								"sink": {
+									"name": "FirstConversion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['first_deal_created_date']"
+								},
+								"sink": {
+									"name": "FirstDealCreatedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['firstname']"
+								},
+								"sink": {
+									"name": "FirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['fulltime_enrollment_as_reported_to_ipeds']"
+								},
+								"sink": {
+									"name": "FulltimeEnrollmentAsReportedToIpeds",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['gender']"
+								},
+								"sink": {
+									"name": "Gender",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['graduation_date']"
+								},
+								"sink": {
+									"name": "GraduationDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_average_page_views']"
+								},
+								"sink": {
+									"name": "AveragePageviews",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_first_referrer']"
+								},
+								"sink": {
+									"name": "FirstReferringSite",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_first_timestamp']"
+								},
+								"sink": {
+									"name": "TimeFirstSeen",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_first_touch_converting_campaign']"
+								},
+								"sink": {
+									"name": "FirstTouchConvertingCampaign",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_first_url']"
+								},
+								"sink": {
+									"name": "FirstPageSeen",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_first_visit_timestamp']"
+								},
+								"sink": {
+									"name": "TimeOfFirstSession",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_last_referrer']"
+								},
+								"sink": {
+									"name": "LastReferringSite",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_last_timestamp']"
+								},
+								"sink": {
+									"name": "TimeLastSeen",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_last_touch_converting_campaign']"
+								},
+								"sink": {
+									"name": "LastTouchConvertingCampaign",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_last_url']"
+								},
+								"sink": {
+									"name": "LastPageSeen",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_last_visit_timestamp']"
+								},
+								"sink": {
+									"name": "TimeOfLastSession",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_num_event_completions']"
+								},
+								"sink": {
+									"name": "NumberOfEventCompletions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_num_page_views']"
+								},
+								"sink": {
+									"name": "NumberOfPageviews",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_num_visits']"
+								},
+								"sink": {
+									"name": "NumberOfSessions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_revenue']"
+								},
+								"sink": {
+									"name": "EventRevenue",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_source']"
+								},
+								"sink": {
+									"name": "OriginalSource",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_source_data_1']"
+								},
+								"sink": {
+									"name": "OriginalSourceDrilldown1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_analytics_source_data_2']"
+								},
+								"sink": {
+									"name": "OriginalSourceDrilldown2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_buying_role']"
+								},
+								"sink": {
+									"name": "BuyingRole",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_contact_enrichment_opt_out']"
+								},
+								"sink": {
+									"name": "EnrichmentOptOut",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_contact_enrichment_opt_out_timestamp']"
+								},
+								"sink": {
+									"name": "EnrichmentOptOutTimestamp",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_email']"
+								},
+								"sink": {
+									"name": "MemberEmail",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_email_confirmed']"
+								},
+								"sink": {
+									"name": "EmailConfirmed",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_follow_up_enqueued_at']"
+								},
+								"sink": {
+									"name": "TimeEnrolledInRegistrationFollowUpEmails",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_notes']"
+								},
+								"sink": {
+									"name": "MembershipNotes",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_registered_at']"
+								},
+								"sink": {
+									"name": "RegisteredAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_registration_domain_sent_to']"
+								},
+								"sink": {
+									"name": "DomainToWhichRegistrationEmailWasSent",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_registration_email_sent_at']"
+								},
+								"sink": {
+									"name": "TimeRegistrationEmailWasSent",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_content_membership_status']"
+								},
+								"sink": {
+									"name": "Status",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_country_region_code']"
+								},
+								"sink": {
+									"name": "CountryregionCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_created_by_user_id']"
+								},
+								"sink": {
+									"name": "CreatedByUserID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_entered_evangelist']"
+								},
+								"sink": {
+									"name": "DateEnteredEvangelistLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_entered_opportunity']"
+								},
+								"sink": {
+									"name": "DateEnteredOpportunityLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_entered_subscriber']"
+								},
+								"sink": {
+									"name": "DateEnteredSubscriberLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_exited_evangelist']"
+								},
+								"sink": {
+									"name": "DateExitedEvangelistLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_exited_other']"
+								},
+								"sink": {
+									"name": "DateExitedOtherLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_exited_salesqualifiedlead']"
+								},
+								"sink": {
+									"name": "DateExitedSalesQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_date_exited_subscriber']"
+								},
+								"sink": {
+									"name": "DateExitedSubscriberLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_bad_address']"
+								},
+								"sink": {
+									"name": "InvalidEmailAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_bounce']"
+								},
+								"sink": {
+									"name": "MarketingEmailsBounced",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_click']"
+								},
+								"sink": {
+									"name": "MarketingEmailsClicked",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_customer_quarantined_reason']"
+								},
+								"sink": {
+									"name": "EmailAddressQuarantineReason",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_delivered']"
+								},
+								"sink": {
+									"name": "MarketingEmailsDelivered",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_domain']"
+								},
+								"sink": {
+									"name": "EmailDomain",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_first_click_date']"
+								},
+								"sink": {
+									"name": "FirstMarketingEmailClickDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_first_open_date']"
+								},
+								"sink": {
+									"name": "FirstMarketingEmailOpenDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_first_reply_date']"
+								},
+								"sink": {
+									"name": "FirstMarketingEmailReplyDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_first_send_date']"
+								},
+								"sink": {
+									"name": "FirstMarketingEmailSendDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_hard_bounce_reason']"
+								},
+								"sink": {
+									"name": "EmailHardBounceReason",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_last_click_date']"
+								},
+								"sink": {
+									"name": "LastMarketingEmailClickDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_last_email_name']"
+								},
+								"sink": {
+									"name": "LastMarketingEmailName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_last_open_date']"
+								},
+								"sink": {
+									"name": "LastMarketingEmailOpenDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_last_reply_date']"
+								},
+								"sink": {
+									"name": "LastMarketingEmailReplyDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_last_send_date']"
+								},
+								"sink": {
+									"name": "LastMarketingEmailSendDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_open']"
+								},
+								"sink": {
+									"name": "MarketingEmailsOpened",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_optout']"
+								},
+								"sink": {
+									"name": "UnsubscribedFromAllEmail",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_optout_40116156']"
+								},
+								"sink": {
+									"name": "OptedOutOfEmailOneToOne",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_quarantined']"
+								},
+								"sink": {
+									"name": "EmailAddressQuarantined",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_quarantined_reason']"
+								},
+								"sink": {
+									"name": "EmailAddressAutomatedQuarantineReason",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_replied']"
+								},
+								"sink": {
+									"name": "MarketingEmailsReplied",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_email_sends_since_last_engagement']"
+								},
+								"sink": {
+									"name": "SendsSinceLastEngagement",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_emailconfirmationstatus']"
+								},
+								"sink": {
+									"name": "MarketingEmailConfirmationStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_facebook_click_id']"
+								},
+								"sink": {
+									"name": "FacebookClickId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_first_engagement_object_id']"
+								},
+								"sink": {
+									"name": "IDOfFirstEngagement",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_first_order_closed_date']"
+								},
+								"sink": {
+									"name": "FirstOrderClosedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_google_click_id']"
+								},
+								"sink": {
+									"name": "GoogleAdClickId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_ip_timezone']"
+								},
+								"sink": {
+									"name": "IpTimezone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_is_enriched']"
+								},
+								"sink": {
+									"name": "HasBeenEnriched",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_is_unworked']"
+								},
+								"sink": {
+									"name": "ContactUnworked",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_language']"
+								},
+								"sink": {
+									"name": "PreferredLanguage",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_last_sales_activity_timestamp']"
+								},
+								"sink": {
+									"name": "LastEngagementDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_disqualified_lead_date']"
+								},
+								"sink": {
+									"name": "LatestDisqualifiedLeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_open_lead_date']"
+								},
+								"sink": {
+									"name": "LatestOpenLeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_qualified_lead_date']"
+								},
+								"sink": {
+									"name": "LatestQualifiedLeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_sequence_ended_date']"
+								},
+								"sink": {
+									"name": "LastSequenceEndedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_sequence_enrolled']"
+								},
+								"sink": {
+									"name": "LastSequenceEnrolled",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_sequence_enrolled_date']"
+								},
+								"sink": {
+									"name": "LastSequenceEnrolledDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_source']"
+								},
+								"sink": {
+									"name": "LatestSource",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_source_data_1']"
+								},
+								"sink": {
+									"name": "LatestSourceDrilldown1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_source_data_2']"
+								},
+								"sink": {
+									"name": "LatestSourceDrilldown2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_latest_source_timestamp']"
+								},
+								"sink": {
+									"name": "LatestSourceDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lead_status']"
+								},
+								"sink": {
+									"name": "LeadStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_legal_basis']"
+								},
+								"sink": {
+									"name": "LegalBasisForProcessingContactsData",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_customer_date']"
+								},
+								"sink": {
+									"name": "BecameACustomerDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_evangelist_date']"
+								},
+								"sink": {
+									"name": "BecameAnEvangelistDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_lead_date']"
+								},
+								"sink": {
+									"name": "BecameALeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_marketingqualifiedlead_date']"
+								},
+								"sink": {
+									"name": "BecameAMarketingQualifiedLeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_opportunity_date']"
+								},
+								"sink": {
+									"name": "BecameAnOpportunityDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_other_date']"
+								},
+								"sink": {
+									"name": "BecameAnOtherLifecycleDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_salesqualifiedlead_date']"
+								},
+								"sink": {
+									"name": "BecameASalesQualifiedLeadDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_lifecyclestage_subscriber_date']"
+								},
+								"sink": {
+									"name": "BecameASubscriberDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_linkedin_url']"
+								},
+								"sink": {
+									"name": "LinkedinUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_marketable_reason_id']"
+								},
+								"sink": {
+									"name": "MarketingContactStatusSourceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_marketable_reason_type']"
+								},
+								"sink": {
+									"name": "MarketingContactStatusSourceType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_marketable_status']"
+								},
+								"sink": {
+									"name": "MarketingContactStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_marketable_until_renewal']"
+								},
+								"sink": {
+									"name": "MarketingContactUntilNextUpdate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_membership_has_accessed_private_content']"
+								},
+								"sink": {
+									"name": "MemberHasAccessedPrivateContent",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_membership_last_private_content_access_date']"
+								},
+								"sink": {
+									"name": "MembershipLastPrivateContentAccessDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_merged_object_ids']"
+								},
+								"sink": {
+									"name": "MergedContactIds",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_id']"
+								},
+								"sink": {
+									"name": "ContactID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_source_detail_1']"
+								},
+								"sink": {
+									"name": "RecordSourceDetail1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_source_detail_2']"
+								},
+								"sink": {
+									"name": "RecordSourceDetail2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_source_detail_3']"
+								},
+								"sink": {
+									"name": "RecordSourceDetail3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_source_label']"
+								},
+								"sink": {
+									"name": "RecordSource",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_persona']"
+								},
+								"sink": {
+									"name": "Persona",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_predictivecontactscore_v2']"
+								},
+								"sink": {
+									"name": "LikelihoodToClose",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_predictivescoringtier']"
+								},
+								"sink": {
+									"name": "ContactPriority",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_quarantined_emails']"
+								},
+								"sink": {
+									"name": "QuarantinedEmails",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_recent_closed_order_date']"
+								},
+								"sink": {
+									"name": "RecentClosedOrderDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_registered_member']"
+								},
+								"sink": {
+									"name": "RegisteredMember",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_registration_method']"
+								},
+								"sink": {
+									"name": "RegistrationMethod",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_role']"
+								},
+								"sink": {
+									"name": "EmploymentRole",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sa_first_engagement_date']"
+								},
+								"sink": {
+									"name": "DateOfFirstEngagement",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sa_first_engagement_descr']"
+								},
+								"sink": {
+									"name": "DescriptionOfFirstEngagement",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sa_first_engagement_object_type']"
+								},
+								"sink": {
+									"name": "TypeOfFirstEngagement",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sales_email_last_clicked']"
+								},
+								"sink": {
+									"name": "RecentSalesEmailClickedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sales_email_last_opened']"
+								},
+								"sink": {
+									"name": "RecentSalesEmailOpenedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sales_email_last_replied']"
+								},
+								"sink": {
+									"name": "RecentSalesEmailRepliedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_seniority']"
+								},
+								"sink": {
+									"name": "EmploymentSeniority",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sequences_enrolled_count']"
+								},
+								"sink": {
+									"name": "NumberOfSequencesEnrolled",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sequences_is_enrolled']"
+								},
+								"sink": {
+									"name": "CurrentlyInSequence",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_shared_team_ids']"
+								},
+								"sink": {
+									"name": "SharedTeams",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_shared_user_ids']"
+								},
+								"sink": {
+									"name": "SharedUsers",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_state_code']"
+								},
+								"sink": {
+									"name": "StateregionCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_sub_role']"
+								},
+								"sink": {
+									"name": "EmploymentSubRole",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_between_contact_creation_and_deal_close']"
+								},
+								"sink": {
+									"name": "TimeBetweenContactCreationAndDealClose",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_between_contact_creation_and_deal_creation']"
+								},
+								"sink": {
+									"name": "TimeBetweenContactCreationAndDealCreation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_in_opportunity']"
+								},
+								"sink": {
+									"name": "TimeInOpportunity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_in_subscriber']"
+								},
+								"sink": {
+									"name": "TimeInSubscriber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_first_engagement']"
+								},
+								"sink": {
+									"name": "LeadResponseTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_move_from_lead_to_customer']"
+								},
+								"sink": {
+									"name": "TimeToMoveFromLeadToCustomer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_move_from_marketingqualifiedlead_to_customer']"
+								},
+								"sink": {
+									"name": "TimeToMoveFromMarketingQualifiedLeadToCustomer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_move_from_opportunity_to_customer']"
+								},
+								"sink": {
+									"name": "TimeToMoveFromOpportunityToCustomer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_move_from_salesqualifiedlead_to_customer']"
+								},
+								"sink": {
+									"name": "TimeToMoveFromSalesQualifiedLeadToCustomer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_time_to_move_from_subscriber_to_customer']"
+								},
+								"sink": {
+									"name": "TimeToMoveFromSubscriberToCustomer",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_timezone']"
+								},
+								"sink": {
+									"name": "TimeZone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_updated_by_user_id']"
+								},
+								"sink": {
+									"name": "UpdatedByUserId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_customer']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInCustomerLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_evangelist']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInEvangelistLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_lead']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_marketingqualifiedlead']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInMarketingQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_opportunity']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInOpportunityLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_other']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInOtherLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_salesqualifiedlead']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInSalesQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_cumulative_time_in_subscriber']"
+								},
+								"sink": {
+									"name": "CumulativeTimeInSubscriberLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_customer']"
+								},
+								"sink": {
+									"name": "DateEnteredCustomerLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_lead']"
+								},
+								"sink": {
+									"name": "DateEnteredLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_marketingqualifiedlead']"
+								},
+								"sink": {
+									"name": "DateEnteredMarketingQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_opportunity']"
+								},
+								"sink": {
+									"name": "V2DateEnteredOpportunityLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_other']"
+								},
+								"sink": {
+									"name": "DateEnteredOtherLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_salesqualifiedlead']"
+								},
+								"sink": {
+									"name": "DateEnteredSalesQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_entered_subscriber']"
+								},
+								"sink": {
+									"name": "V2DateEnteredSubscriberLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_exited_customer']"
+								},
+								"sink": {
+									"name": "DateExitedCustomerLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_exited_lead']"
+								},
+								"sink": {
+									"name": "DateExitedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_exited_marketingqualifiedlead']"
+								},
+								"sink": {
+									"name": "DateExitedMarketingQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_date_exited_opportunity']"
+								},
+								"sink": {
+									"name": "DateExitedOpportunityLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_customer']"
+								},
+								"sink": {
+									"name": "LatestTimeInCustomerLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_evangelist']"
+								},
+								"sink": {
+									"name": "LatestTimeInEvangelistLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_lead']"
+								},
+								"sink": {
+									"name": "LatestTimeInLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_marketingqualifiedlead']"
+								},
+								"sink": {
+									"name": "LatestTimeInMarketingQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_opportunity']"
+								},
+								"sink": {
+									"name": "LatestTimeInOpportunityLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_other']"
+								},
+								"sink": {
+									"name": "LatestTimeInOtherLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_salesqualifiedlead']"
+								},
+								"sink": {
+									"name": "LatestTimeInSalesQualifiedLeadLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_v2_latest_time_in_subscriber']"
+								},
+								"sink": {
+									"name": "LatestTimeInSubscriberLifecycleStagePipeline",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_whatsapp_phone_number']"
+								},
+								"sink": {
+									"name": "WhatsappPhoneNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hubspot_owner_assigneddate']"
+								},
+								"sink": {
+									"name": "OwnerAssignedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hubspot_owner_id']"
+								},
+								"sink": {
+									"name": "ContactOwner",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hubspot_team_id']"
+								},
+								"sink": {
+									"name": "HubspotTeam",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hubspotscore']"
+								},
+								"sink": {
+									"name": "HubspotScore",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['industry']"
+								},
+								"sink": {
+									"name": "Industry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['institution_membership_end_date']"
+								},
+								"sink": {
+									"name": "InstitutionsMembershipEndDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['institution_membership_grace_date']"
+								},
+								"sink": {
+									"name": "InstitutionsMembershipGraceDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ip_city']"
+								},
+								"sink": {
+									"name": "IpCity",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ip_country']"
+								},
+								"sink": {
+									"name": "IpCountry",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ip_country_code']"
+								},
+								"sink": {
+									"name": "IpCountryCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ip_state']"
+								},
+								"sink": {
+									"name": "IpStateregion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['ip_state_code']"
+								},
+								"sink": {
+									"name": "IpStateCoderegionCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['job_function2']"
+								},
+								"sink": {
+									"name": "JobFunction",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['jobtitle']"
+								},
+								"sink": {
+									"name": "JobTitle",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['label_name']"
+								},
+								"sink": {
+									"name": "LabelName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['lastmodifieddate']"
+								},
+								"sink": {
+									"name": "LastModifiedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['lastname']"
+								},
+								"sink": {
+									"name": "LastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['lifecyclestage']"
+								},
+								"sink": {
+									"name": "LifecycleStage",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['mailing_address']"
+								},
+								"sink": {
+									"name": "MailingAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['marital_status']"
+								},
+								"sink": {
+									"name": "MaritalStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['member_customer_id']"
+								},
+								"sink": {
+									"name": "MemberCustomerId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['member_name']"
+								},
+								"sink": {
+									"name": "MemberName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['member_status']"
+								},
+								"sink": {
+									"name": "MemberStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['member_type']"
+								},
+								"sink": {
+									"name": "MemberType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['membership_product_code']"
+								},
+								"sink": {
+									"name": "MembershipProductCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['membership_status']"
+								},
+								"sink": {
+									"name": "MembershipStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['message']"
+								},
+								"sink": {
+									"name": "Message",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['middle_name']"
+								},
+								"sink": {
+									"name": "MiddleName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['military_status']"
+								},
+								"sink": {
+									"name": "MilitaryStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['mobilephone']"
+								},
+								"sink": {
+									"name": "MobilePhoneNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['name_credentials']"
+								},
+								"sink": {
+									"name": "NameCredentials",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['name_prefix']"
+								},
+								"sink": {
+									"name": "NamePrefix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['name_suffix']"
+								},
+								"sink": {
+									"name": "NameSuffix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['nickname']"
+								},
+								"sink": {
+									"name": "Nickname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['notes_last_contacted']"
+								},
+								"sink": {
+									"name": "LastContacted",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['notes_last_updated']"
+								},
+								"sink": {
+									"name": "LastActivityDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['notes_next_activity_date']"
+								},
+								"sink": {
+									"name": "NextActivityDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['num_associated_deals']"
+								},
+								"sink": {
+									"name": "NumberOfAssociatedDeals",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['num_contacted_notes']"
+								},
+								"sink": {
+									"name": "NumberOfTimesContacted",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['num_conversion_events']"
+								},
+								"sink": {
+									"name": "NumberOfFormSubmissions",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['num_notes']"
+								},
+								"sink": {
+									"name": "NumberOfSalesActivities",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['num_unique_conversion_events']"
+								},
+								"sink": {
+									"name": "NumberOfUniqueFormsSubmitted",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['numemployees']"
+								},
+								"sink": {
+									"name": "NumberOfEmployees",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['past_unsubscribe_date']"
+								},
+								"sink": {
+									"name": "PastUnsubscribeDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['personify_customer_id_2']"
+								},
+								"sink": {
+									"name": "PersonifyCustomerID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['personify_institution_id']"
+								},
+								"sink": {
+									"name": "PersonifyInstitutionId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['phone']"
+								},
+								"sink": {
+									"name": "PhoneNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['position_level']"
+								},
+								"sink": {
+									"name": "PositionLevel",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['primary_responsibility']"
+								},
+								"sink": {
+									"name": "PrimaryAreaOfResponsibility",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['recent_conversion_date']"
+								},
+								"sink": {
+									"name": "RecentConversionDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['recent_conversion_event_name']"
+								},
+								"sink": {
+									"name": "RecentConversion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['recent_deal_amount']"
+								},
+								"sink": {
+									"name": "RecentDealAmount",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['recent_deal_close_date']"
+								},
+								"sink": {
+									"name": "RecentDealCloseDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['relationship_status']"
+								},
+								"sink": {
+									"name": "RelationshipStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['salutation']"
+								},
+								"sink": {
+									"name": "Salutation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['schedule_your_appointment_below']"
+								},
+								"sink": {
+									"name": "ScheduleYourAppointmentBelow",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['school']"
+								},
+								"sink": {
+									"name": "School",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['secondary_area_of_responsibility']"
+								},
+								"sink": {
+									"name": "SecondaryAreaOfResponsibility",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['secondary_phone__employer_work_phone_']"
+								},
+								"sink": {
+									"name": "SecondaryPhoneEmployerWorkPhone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['seniority']"
+								},
+								"sink": {
+									"name": "Seniority",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['start_date']"
+								},
+								"sink": {
+									"name": "StartDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['state']"
+								},
+								"sink": {
+									"name": "Stateregion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['street_address_3']"
+								},
+								"sink": {
+									"name": "StreetAddress3",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['total_revenue']"
+								},
+								"sink": {
+									"name": "TotalRevenue",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['twitterhandle']"
+								},
+								"sink": {
+									"name": "TwitterUsername",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['website']"
+								},
+								"sink": {
+									"name": "WebsiteUrl",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['what_location_would_you_like_to_visit']"
+								},
+								"sink": {
+									"name": "WhatLocationWouldYouLikeToVisit",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['what_mower_would_you_like_to_demo']"
+								},
+								"sink": {
+									"name": "WhatMowerWouldYouLikeToDemo",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['what_product_would_you_like_a_quote_on']"
+								},
+								"sink": {
+									"name": "WhatProductWouldYouLikeAQuoteOn",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['what_service_are_you_interested_in']"
+								},
+								"sink": {
+									"name": "WhatServiceAreYouInterestedIn",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['which_offer_are_you_interested_in']"
+								},
+								"sink": {
+									"name": "WhichOfferAreYouInterestedIn",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['work_email']"
+								},
+								"sink": {
+									"name": "WorkEmail",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['zip']"
+								},
+								"sink": {
+									"name": "PostalCode",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "HubSpot_GetContact_Clone",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "case_eus_dev_contact_ds",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "GetOffSetValue",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "CopyHubSpotContacts",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.23:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"Authorization": {
+							"value": "@concat('Bearer ', variables('Token'))",
+							"type": "Expression"
+						}
+					},
+					"url": "https://api.hubapi.com/crm/v3/objects/contacts?limit=100&after=56470868607"
+				}
+			},
+			{
+				"name": "setHasMore",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set After",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "hasMore",
+					"value": {
+						"value": "@if(contains(activity('GetOffSetValue').output, 'paging'), true, false)\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set After",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetOffSetValue",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "after",
+					"value": {
+						"value": "@activity('GetOffSetValue').output.paging.next.after",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "until_has_more_is_false",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "setHasMore",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('hasMore'), false)\n",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "copyContactAPIURL",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.23:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": {
+											"value": "@concat('Bearer ', variables('Token'))",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"RecordID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['id']"
+											},
+											"sink": {
+												"name": "RecordID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address']"
+											},
+											"sink": {
+												"name": "StreetAddress",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address_2']"
+											},
+											"sink": {
+												"name": "StreetAddress2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address_status']"
+											},
+											"sink": {
+												"name": "AddressStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['address_type']"
+											},
+											"sink": {
+												"name": "AddressType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['allow_email_flag']"
+											},
+											"sink": {
+												"name": "AllowsEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['allows_phone']"
+											},
+											"sink": {
+												"name": "AllowsPhone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['allows_solicitation']"
+											},
+											"sink": {
+												"name": "AllowsSolicitation",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['annualrevenue']"
+											},
+											"sink": {
+												"name": "AnnualRevenue",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['case_district_2']"
+											},
+											"sink": {
+												"name": "CaseDistrict",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['case_region_2']"
+											},
+											"sink": {
+												"name": "CaseRegion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['chief_position']"
+											},
+											"sink": {
+												"name": "ChiefPosition",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['city']"
+											},
+											"sink": {
+												"name": "City",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['closedate']"
+											},
+											"sink": {
+												"name": "CloseDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['company']"
+											},
+											"sink": {
+												"name": "CompanyName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['company_size']"
+											},
+											"sink": {
+												"name": "CompanySize",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['constituency']"
+											},
+											"sink": {
+												"name": "Constituency",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['country']"
+											},
+											"sink": {
+												"name": "Countryregion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['createdate']"
+											},
+											"sink": {
+												"name": "CreateDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['currentlyinworkflow']"
+											},
+											"sink": {
+												"name": "CurrentlyInWorkflow",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['customer_class_2']"
+											},
+											"sink": {
+												"name": "CustomerClass",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['date_of_birth']"
+											},
+											"sink": {
+												"name": "DateOfBirth",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['days_to_close']"
+											},
+											"sink": {
+												"name": "DaysToClose",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['degree']"
+											},
+											"sink": {
+												"name": "Degree",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['dues_basis__fte_']"
+											},
+											"sink": {
+												"name": "DuesBasisFte",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['email']"
+											},
+											"sink": {
+												"name": "Email",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['employer_customer_class_code']"
+											},
+											"sink": {
+												"name": "EmployerCustomerClassCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['engagements_last_meeting_booked']"
+											},
+											"sink": {
+												"name": "DateOfLastMeetingBookedInMeetingsTool",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['engagements_last_meeting_booked_campaign']"
+											},
+											"sink": {
+												"name": "CampaignOfLastBookingInMeetingsTool",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['engagements_last_meeting_booked_medium']"
+											},
+											"sink": {
+												"name": "MediumOfLastBookingInMeetingsTool",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['engagements_last_meeting_booked_source']"
+											},
+											"sink": {
+												"name": "SourceOfLastBookingInMeetingsTool",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ethnicity_code']"
+											},
+											"sink": {
+												"name": "EthnicityCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['fax']"
+											},
+											"sink": {
+												"name": "FaxNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['field_of_study']"
+											},
+											"sink": {
+												"name": "FieldOfStudy",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['first_conversion_date']"
+											},
+											"sink": {
+												"name": "FirstConversionDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['first_conversion_event_name']"
+											},
+											"sink": {
+												"name": "FirstConversion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['first_deal_created_date']"
+											},
+											"sink": {
+												"name": "FirstDealCreatedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['firstname']"
+											},
+											"sink": {
+												"name": "FirstName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['fulltime_enrollment_as_reported_to_ipeds']"
+											},
+											"sink": {
+												"name": "FulltimeEnrollmentAsReportedToIpeds",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['gender']"
+											},
+											"sink": {
+												"name": "Gender",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['graduation_date']"
+											},
+											"sink": {
+												"name": "GraduationDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_average_page_views']"
+											},
+											"sink": {
+												"name": "AveragePageviews",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_referrer']"
+											},
+											"sink": {
+												"name": "FirstReferringSite",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_timestamp']"
+											},
+											"sink": {
+												"name": "TimeFirstSeen",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_touch_converting_campaign']"
+											},
+											"sink": {
+												"name": "FirstTouchConvertingCampaign",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_url']"
+											},
+											"sink": {
+												"name": "FirstPageSeen",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_first_visit_timestamp']"
+											},
+											"sink": {
+												"name": "TimeOfFirstSession",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_last_referrer']"
+											},
+											"sink": {
+												"name": "LastReferringSite",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_last_timestamp']"
+											},
+											"sink": {
+												"name": "TimeLastSeen",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_last_touch_converting_campaign']"
+											},
+											"sink": {
+												"name": "LastTouchConvertingCampaign",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_last_url']"
+											},
+											"sink": {
+												"name": "LastPageSeen",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_last_visit_timestamp']"
+											},
+											"sink": {
+												"name": "TimeOfLastSession",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_num_event_completions']"
+											},
+											"sink": {
+												"name": "NumberOfEventCompletions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_num_page_views']"
+											},
+											"sink": {
+												"name": "NumberOfPageviews",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_num_visits']"
+											},
+											"sink": {
+												"name": "NumberOfSessions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_revenue']"
+											},
+											"sink": {
+												"name": "EventRevenue",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source']"
+											},
+											"sink": {
+												"name": "OriginalSource",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source_data_1']"
+											},
+											"sink": {
+												"name": "OriginalSourceDrilldown1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_analytics_source_data_2']"
+											},
+											"sink": {
+												"name": "OriginalSourceDrilldown2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_buying_role']"
+											},
+											"sink": {
+												"name": "BuyingRole",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_contact_enrichment_opt_out']"
+											},
+											"sink": {
+												"name": "EnrichmentOptOut",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_contact_enrichment_opt_out_timestamp']"
+											},
+											"sink": {
+												"name": "EnrichmentOptOutTimestamp",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_email']"
+											},
+											"sink": {
+												"name": "MemberEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_email_confirmed']"
+											},
+											"sink": {
+												"name": "EmailConfirmed",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_follow_up_enqueued_at']"
+											},
+											"sink": {
+												"name": "TimeEnrolledInRegistrationFollowUpEmails",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_notes']"
+											},
+											"sink": {
+												"name": "MembershipNotes",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_registered_at']"
+											},
+											"sink": {
+												"name": "RegisteredAt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_registration_domain_sent_to']"
+											},
+											"sink": {
+												"name": "DomainToWhichRegistrationEmailWasSent",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_registration_email_sent_at']"
+											},
+											"sink": {
+												"name": "TimeRegistrationEmailWasSent",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_content_membership_status']"
+											},
+											"sink": {
+												"name": "Status",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_country_region_code']"
+											},
+											"sink": {
+												"name": "CountryregionCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_created_by_user_id']"
+											},
+											"sink": {
+												"name": "CreatedByUserID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_entered_evangelist']"
+											},
+											"sink": {
+												"name": "DateEnteredEvangelistLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_entered_opportunity']"
+											},
+											"sink": {
+												"name": "DateEnteredOpportunityLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_entered_subscriber']"
+											},
+											"sink": {
+												"name": "DateEnteredSubscriberLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_exited_evangelist']"
+											},
+											"sink": {
+												"name": "DateExitedEvangelistLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_exited_other']"
+											},
+											"sink": {
+												"name": "DateExitedOtherLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_exited_salesqualifiedlead']"
+											},
+											"sink": {
+												"name": "DateExitedSalesQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_date_exited_subscriber']"
+											},
+											"sink": {
+												"name": "DateExitedSubscriberLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_bad_address']"
+											},
+											"sink": {
+												"name": "InvalidEmailAddress",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_bounce']"
+											},
+											"sink": {
+												"name": "MarketingEmailsBounced",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_click']"
+											},
+											"sink": {
+												"name": "MarketingEmailsClicked",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_customer_quarantined_reason']"
+											},
+											"sink": {
+												"name": "EmailAddressQuarantineReason",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_delivered']"
+											},
+											"sink": {
+												"name": "MarketingEmailsDelivered",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_domain']"
+											},
+											"sink": {
+												"name": "EmailDomain",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_first_click_date']"
+											},
+											"sink": {
+												"name": "FirstMarketingEmailClickDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_first_open_date']"
+											},
+											"sink": {
+												"name": "FirstMarketingEmailOpenDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_first_reply_date']"
+											},
+											"sink": {
+												"name": "FirstMarketingEmailReplyDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_first_send_date']"
+											},
+											"sink": {
+												"name": "FirstMarketingEmailSendDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_hard_bounce_reason']"
+											},
+											"sink": {
+												"name": "EmailHardBounceReason",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_last_click_date']"
+											},
+											"sink": {
+												"name": "LastMarketingEmailClickDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_last_email_name']"
+											},
+											"sink": {
+												"name": "LastMarketingEmailName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_last_open_date']"
+											},
+											"sink": {
+												"name": "LastMarketingEmailOpenDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_last_reply_date']"
+											},
+											"sink": {
+												"name": "LastMarketingEmailReplyDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_last_send_date']"
+											},
+											"sink": {
+												"name": "LastMarketingEmailSendDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_open']"
+											},
+											"sink": {
+												"name": "MarketingEmailsOpened",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_optout']"
+											},
+											"sink": {
+												"name": "UnsubscribedFromAllEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_optout_40116156']"
+											},
+											"sink": {
+												"name": "OptedOutOfEmailOneToOne",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_quarantined']"
+											},
+											"sink": {
+												"name": "EmailAddressQuarantined",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_quarantined_reason']"
+											},
+											"sink": {
+												"name": "EmailAddressAutomatedQuarantineReason",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_replied']"
+											},
+											"sink": {
+												"name": "MarketingEmailsReplied",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_email_sends_since_last_engagement']"
+											},
+											"sink": {
+												"name": "SendsSinceLastEngagement",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_emailconfirmationstatus']"
+											},
+											"sink": {
+												"name": "MarketingEmailConfirmationStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_facebook_click_id']"
+											},
+											"sink": {
+												"name": "FacebookClickId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_first_engagement_object_id']"
+											},
+											"sink": {
+												"name": "IDOfFirstEngagement",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_first_order_closed_date']"
+											},
+											"sink": {
+												"name": "FirstOrderClosedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_google_click_id']"
+											},
+											"sink": {
+												"name": "GoogleAdClickId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_ip_timezone']"
+											},
+											"sink": {
+												"name": "IpTimezone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_is_enriched']"
+											},
+											"sink": {
+												"name": "HasBeenEnriched",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_is_unworked']"
+											},
+											"sink": {
+												"name": "ContactUnworked",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_language']"
+											},
+											"sink": {
+												"name": "PreferredLanguage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_last_sales_activity_timestamp']"
+											},
+											"sink": {
+												"name": "LastEngagementDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_disqualified_lead_date']"
+											},
+											"sink": {
+												"name": "LatestDisqualifiedLeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_open_lead_date']"
+											},
+											"sink": {
+												"name": "LatestOpenLeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_qualified_lead_date']"
+											},
+											"sink": {
+												"name": "LatestQualifiedLeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_sequence_ended_date']"
+											},
+											"sink": {
+												"name": "LastSequenceEndedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_sequence_enrolled']"
+											},
+											"sink": {
+												"name": "LastSequenceEnrolled",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_sequence_enrolled_date']"
+											},
+											"sink": {
+												"name": "LastSequenceEnrolledDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_source']"
+											},
+											"sink": {
+												"name": "LatestSource",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_source_data_1']"
+											},
+											"sink": {
+												"name": "LatestSourceDrilldown1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_source_data_2']"
+											},
+											"sink": {
+												"name": "LatestSourceDrilldown2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_latest_source_timestamp']"
+											},
+											"sink": {
+												"name": "LatestSourceDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lead_status']"
+											},
+											"sink": {
+												"name": "LeadStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_legal_basis']"
+											},
+											"sink": {
+												"name": "LegalBasisForProcessingContactsData",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_customer_date']"
+											},
+											"sink": {
+												"name": "BecameACustomerDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_evangelist_date']"
+											},
+											"sink": {
+												"name": "BecameAnEvangelistDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_lead_date']"
+											},
+											"sink": {
+												"name": "BecameALeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_marketingqualifiedlead_date']"
+											},
+											"sink": {
+												"name": "BecameAMarketingQualifiedLeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_opportunity_date']"
+											},
+											"sink": {
+												"name": "BecameAnOpportunityDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_other_date']"
+											},
+											"sink": {
+												"name": "BecameAnOtherLifecycleDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_salesqualifiedlead_date']"
+											},
+											"sink": {
+												"name": "BecameASalesQualifiedLeadDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_lifecyclestage_subscriber_date']"
+											},
+											"sink": {
+												"name": "BecameASubscriberDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_linkedin_url']"
+											},
+											"sink": {
+												"name": "LinkedinUrl",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_marketable_reason_id']"
+											},
+											"sink": {
+												"name": "MarketingContactStatusSourceName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_marketable_reason_type']"
+											},
+											"sink": {
+												"name": "MarketingContactStatusSourceType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_marketable_status']"
+											},
+											"sink": {
+												"name": "MarketingContactStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_marketable_until_renewal']"
+											},
+											"sink": {
+												"name": "MarketingContactUntilNextUpdate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_membership_has_accessed_private_content']"
+											},
+											"sink": {
+												"name": "MemberHasAccessedPrivateContent",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_membership_last_private_content_access_date']"
+											},
+											"sink": {
+												"name": "MembershipLastPrivateContentAccessDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_merged_object_ids']"
+											},
+											"sink": {
+												"name": "MergedContactIds",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_id']"
+											},
+											"sink": {
+												"name": "ContactID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_source_detail_1']"
+											},
+											"sink": {
+												"name": "RecordSourceDetail1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_source_detail_2']"
+											},
+											"sink": {
+												"name": "RecordSourceDetail2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_source_detail_3']"
+											},
+											"sink": {
+												"name": "RecordSourceDetail3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_object_source_label']"
+											},
+											"sink": {
+												"name": "RecordSource",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_persona']"
+											},
+											"sink": {
+												"name": "Persona",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_predictivecontactscore_v2']"
+											},
+											"sink": {
+												"name": "LikelihoodToClose",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_predictivescoringtier']"
+											},
+											"sink": {
+												"name": "ContactPriority",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_quarantined_emails']"
+											},
+											"sink": {
+												"name": "QuarantinedEmails",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_recent_closed_order_date']"
+											},
+											"sink": {
+												"name": "RecentClosedOrderDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_registered_member']"
+											},
+											"sink": {
+												"name": "RegisteredMember",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_registration_method']"
+											},
+											"sink": {
+												"name": "RegistrationMethod",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_role']"
+											},
+											"sink": {
+												"name": "EmploymentRole",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sa_first_engagement_date']"
+											},
+											"sink": {
+												"name": "DateOfFirstEngagement",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sa_first_engagement_descr']"
+											},
+											"sink": {
+												"name": "DescriptionOfFirstEngagement",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sa_first_engagement_object_type']"
+											},
+											"sink": {
+												"name": "TypeOfFirstEngagement",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sales_email_last_clicked']"
+											},
+											"sink": {
+												"name": "RecentSalesEmailClickedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sales_email_last_opened']"
+											},
+											"sink": {
+												"name": "RecentSalesEmailOpenedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sales_email_last_replied']"
+											},
+											"sink": {
+												"name": "RecentSalesEmailRepliedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_seniority']"
+											},
+											"sink": {
+												"name": "EmploymentSeniority",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sequences_enrolled_count']"
+											},
+											"sink": {
+												"name": "NumberOfSequencesEnrolled",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sequences_is_enrolled']"
+											},
+											"sink": {
+												"name": "CurrentlyInSequence",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_shared_team_ids']"
+											},
+											"sink": {
+												"name": "SharedTeams",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_shared_user_ids']"
+											},
+											"sink": {
+												"name": "SharedUsers",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_state_code']"
+											},
+											"sink": {
+												"name": "StateregionCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_sub_role']"
+											},
+											"sink": {
+												"name": "EmploymentSubRole",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_between_contact_creation_and_deal_close']"
+											},
+											"sink": {
+												"name": "TimeBetweenContactCreationAndDealClose",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_between_contact_creation_and_deal_creation']"
+											},
+											"sink": {
+												"name": "TimeBetweenContactCreationAndDealCreation",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_in_opportunity']"
+											},
+											"sink": {
+												"name": "TimeInOpportunity",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_in_subscriber']"
+											},
+											"sink": {
+												"name": "TimeInSubscriber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_first_engagement']"
+											},
+											"sink": {
+												"name": "LeadResponseTime",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_move_from_lead_to_customer']"
+											},
+											"sink": {
+												"name": "TimeToMoveFromLeadToCustomer",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_move_from_marketingqualifiedlead_to_customer']"
+											},
+											"sink": {
+												"name": "TimeToMoveFromMarketingQualifiedLeadToCustomer",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_move_from_opportunity_to_customer']"
+											},
+											"sink": {
+												"name": "TimeToMoveFromOpportunityToCustomer",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_move_from_salesqualifiedlead_to_customer']"
+											},
+											"sink": {
+												"name": "TimeToMoveFromSalesQualifiedLeadToCustomer",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_time_to_move_from_subscriber_to_customer']"
+											},
+											"sink": {
+												"name": "TimeToMoveFromSubscriberToCustomer",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_timezone']"
+											},
+											"sink": {
+												"name": "TimeZone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_updated_by_user_id']"
+											},
+											"sink": {
+												"name": "UpdatedByUserId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_customer']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInCustomerLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_evangelist']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInEvangelistLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_lead']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_marketingqualifiedlead']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInMarketingQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_opportunity']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInOpportunityLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_other']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInOtherLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_salesqualifiedlead']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInSalesQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_cumulative_time_in_subscriber']"
+											},
+											"sink": {
+												"name": "CumulativeTimeInSubscriberLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_customer']"
+											},
+											"sink": {
+												"name": "DateEnteredCustomerLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_lead']"
+											},
+											"sink": {
+												"name": "DateEnteredLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_marketingqualifiedlead']"
+											},
+											"sink": {
+												"name": "DateEnteredMarketingQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_opportunity']"
+											},
+											"sink": {
+												"name": "V2DateEnteredOpportunityLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_other']"
+											},
+											"sink": {
+												"name": "DateEnteredOtherLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_salesqualifiedlead']"
+											},
+											"sink": {
+												"name": "DateEnteredSalesQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_entered_subscriber']"
+											},
+											"sink": {
+												"name": "V2DateEnteredSubscriberLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_exited_customer']"
+											},
+											"sink": {
+												"name": "DateExitedCustomerLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_exited_lead']"
+											},
+											"sink": {
+												"name": "DateExitedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_exited_marketingqualifiedlead']"
+											},
+											"sink": {
+												"name": "DateExitedMarketingQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_date_exited_opportunity']"
+											},
+											"sink": {
+												"name": "DateExitedOpportunityLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_customer']"
+											},
+											"sink": {
+												"name": "LatestTimeInCustomerLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_evangelist']"
+											},
+											"sink": {
+												"name": "LatestTimeInEvangelistLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_lead']"
+											},
+											"sink": {
+												"name": "LatestTimeInLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_marketingqualifiedlead']"
+											},
+											"sink": {
+												"name": "LatestTimeInMarketingQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_opportunity']"
+											},
+											"sink": {
+												"name": "LatestTimeInOpportunityLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_other']"
+											},
+											"sink": {
+												"name": "LatestTimeInOtherLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_salesqualifiedlead']"
+											},
+											"sink": {
+												"name": "LatestTimeInSalesQualifiedLeadLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_v2_latest_time_in_subscriber']"
+											},
+											"sink": {
+												"name": "LatestTimeInSubscriberLifecycleStagePipeline",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hs_whatsapp_phone_number']"
+											},
+											"sink": {
+												"name": "WhatsappPhoneNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspot_owner_assigneddate']"
+											},
+											"sink": {
+												"name": "OwnerAssignedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspot_owner_id']"
+											},
+											"sink": {
+												"name": "ContactOwner",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspot_team_id']"
+											},
+											"sink": {
+												"name": "HubspotTeam",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['hubspotscore']"
+											},
+											"sink": {
+												"name": "HubspotScore",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['industry']"
+											},
+											"sink": {
+												"name": "Industry",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['institution_membership_end_date']"
+											},
+											"sink": {
+												"name": "InstitutionsMembershipEndDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['institution_membership_grace_date']"
+											},
+											"sink": {
+												"name": "InstitutionsMembershipGraceDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_city']"
+											},
+											"sink": {
+												"name": "IpCity",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_country']"
+											},
+											"sink": {
+												"name": "IpCountry",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_country_code']"
+											},
+											"sink": {
+												"name": "IpCountryCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_state']"
+											},
+											"sink": {
+												"name": "IpStateregion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['ip_state_code']"
+											},
+											"sink": {
+												"name": "IpStateCoderegionCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['job_function2']"
+											},
+											"sink": {
+												"name": "JobFunction",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['jobtitle']"
+											},
+											"sink": {
+												"name": "JobTitle",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['label_name']"
+											},
+											"sink": {
+												"name": "LabelName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lastmodifieddate']"
+											},
+											"sink": {
+												"name": "LastModifiedDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lastname']"
+											},
+											"sink": {
+												"name": "LastName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['lifecyclestage']"
+											},
+											"sink": {
+												"name": "LifecycleStage",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['mailing_address']"
+											},
+											"sink": {
+												"name": "MailingAddress",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['marital_status']"
+											},
+											"sink": {
+												"name": "MaritalStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['member_customer_id']"
+											},
+											"sink": {
+												"name": "MemberCustomerId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['member_name']"
+											},
+											"sink": {
+												"name": "MemberName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['member_status']"
+											},
+											"sink": {
+												"name": "MemberStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['member_type']"
+											},
+											"sink": {
+												"name": "MemberType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['membership_product_code']"
+											},
+											"sink": {
+												"name": "MembershipProductCode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['membership_status']"
+											},
+											"sink": {
+												"name": "MembershipStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['message']"
+											},
+											"sink": {
+												"name": "Message",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['middle_name']"
+											},
+											"sink": {
+												"name": "MiddleName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['military_status']"
+											},
+											"sink": {
+												"name": "MilitaryStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['mobilephone']"
+											},
+											"sink": {
+												"name": "MobilePhoneNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['name_credentials']"
+											},
+											"sink": {
+												"name": "NameCredentials",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['name_prefix']"
+											},
+											"sink": {
+												"name": "NamePrefix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['name_suffix']"
+											},
+											"sink": {
+												"name": "NameSuffix",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['nickname']"
+											},
+											"sink": {
+												"name": "Nickname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['notes_last_contacted']"
+											},
+											"sink": {
+												"name": "LastContacted",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['notes_last_updated']"
+											},
+											"sink": {
+												"name": "LastActivityDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['notes_next_activity_date']"
+											},
+											"sink": {
+												"name": "NextActivityDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_associated_deals']"
+											},
+											"sink": {
+												"name": "NumberOfAssociatedDeals",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_contacted_notes']"
+											},
+											"sink": {
+												"name": "NumberOfTimesContacted",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_conversion_events']"
+											},
+											"sink": {
+												"name": "NumberOfFormSubmissions",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_notes']"
+											},
+											"sink": {
+												"name": "NumberOfSalesActivities",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['num_unique_conversion_events']"
+											},
+											"sink": {
+												"name": "NumberOfUniqueFormsSubmitted",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['numemployees']"
+											},
+											"sink": {
+												"name": "NumberOfEmployees",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['past_unsubscribe_date']"
+											},
+											"sink": {
+												"name": "PastUnsubscribeDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['personify_customer_id_2']"
+											},
+											"sink": {
+												"name": "PersonifyCustomerID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['personify_institution_id']"
+											},
+											"sink": {
+												"name": "PersonifyInstitutionId",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['phone']"
+											},
+											"sink": {
+												"name": "PhoneNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['position_level']"
+											},
+											"sink": {
+												"name": "PositionLevel",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['primary_responsibility']"
+											},
+											"sink": {
+												"name": "PrimaryAreaOfResponsibility",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_conversion_date']"
+											},
+											"sink": {
+												"name": "RecentConversionDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_conversion_event_name']"
+											},
+											"sink": {
+												"name": "RecentConversion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_deal_amount']"
+											},
+											"sink": {
+												"name": "RecentDealAmount",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['recent_deal_close_date']"
+											},
+											"sink": {
+												"name": "RecentDealCloseDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['relationship_status']"
+											},
+											"sink": {
+												"name": "RelationshipStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['salutation']"
+											},
+											"sink": {
+												"name": "Salutation",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['schedule_your_appointment_below']"
+											},
+											"sink": {
+												"name": "ScheduleYourAppointmentBelow",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['school']"
+											},
+											"sink": {
+												"name": "School",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['secondary_area_of_responsibility']"
+											},
+											"sink": {
+												"name": "SecondaryAreaOfResponsibility",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['secondary_phone__employer_work_phone_']"
+											},
+											"sink": {
+												"name": "SecondaryPhoneEmployerWorkPhone",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['seniority']"
+											},
+											"sink": {
+												"name": "Seniority",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['start_date']"
+											},
+											"sink": {
+												"name": "StartDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['state']"
+											},
+											"sink": {
+												"name": "Stateregion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['street_address_3']"
+											},
+											"sink": {
+												"name": "StreetAddress3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['total_revenue']"
+											},
+											"sink": {
+												"name": "TotalRevenue",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['twitterhandle']"
+											},
+											"sink": {
+												"name": "TwitterUsername",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['website']"
+											},
+											"sink": {
+												"name": "WebsiteUrl",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['what_location_would_you_like_to_visit']"
+											},
+											"sink": {
+												"name": "WhatLocationWouldYouLikeToVisit",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['what_mower_would_you_like_to_demo']"
+											},
+											"sink": {
+												"name": "WhatMowerWouldYouLikeToDemo",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['what_product_would_you_like_a_quote_on']"
+											},
+											"sink": {
+												"name": "WhatProductWouldYouLikeAQuoteOn",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['what_service_are_you_interested_in']"
+											},
+											"sink": {
+												"name": "WhatServiceAreYouInterestedIn",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['which_offer_are_you_interested_in']"
+											},
+											"sink": {
+												"name": "WhichOfferAreYouInterestedIn",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['work_email']"
+											},
+											"sink": {
+												"name": "WorkEmail",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['properties']['zip']"
+											},
+											"sink": {
+												"name": "PostalCode",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "HubSpot_Contact_dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"after": {
+											"value": "@variables('after')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "case_eus_dev_contact_ds",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "GetAfterandHasMoreValue",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "copyContactAPIURL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.23:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Authorization": {
+										"value": "@concat('Bearer ', variables('Token'))",
+										"type": "Expression"
+									}
+								},
+								"url": {
+									"value": "https://api.hubapi.com/crm/v3/objects/contacts?limit=100&after=@{variables('after')}\n\n ",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "updateafterValue",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "updateHasMoreValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "after",
+								"value": {
+									"value": "@if(contains(activity('GetAfterandHasMoreValue').output, 'paging'), activity('GetAfterandHasMoreValue').output.paging.next.after, null)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "updateHasMoreValue",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "GetAfterandHasMoreValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "hasMore",
+								"value": {
+									"value": "@if(contains(activity('GetAfterandHasMoreValue').output, 'paging'), true, false)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "to check token Expired or not",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "updateafterValue",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greaterOrEquals(utcnow(), variables('tokenExpireAt'))\n",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "toGetFreshAccessToken",
+										"type": "WebActivity",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"method": "GET",
+											"headers": {
+												"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+											},
+											"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+										}
+									},
+									{
+										"name": "updateToken",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "toGetFreshAccessToken",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Token",
+											"value": {
+												"value": "@activity('toGetFreshAccessToken').output.token",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "updateExpireAt",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "updateToken",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "tokenExpireAt",
+											"value": {
+												"value": "@activity('toGetFreshAccessToken').output.expireAt",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "0.23:00:00"
+				}
+			},
+			{
+				"name": "To get Token Details",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+					},
+					"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+				}
+			},
+			{
+				"name": "token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "To get Token Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('To get Token Details').output.token\n\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "tokenExpire",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tokenExpireAt",
+					"value": {
+						"value": "@activity('To get Token Details').output.expireAt\n\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Offset": {
+				"type": "String"
+			},
+			"OffsetValue": {
+				"type": "Integer"
+			},
+			"hasMore": {
+				"type": "Boolean"
+			},
+			"Token": {
+				"type": "String"
+			},
+			"tokenExpireAt": {
+				"type": "String"
+			},
+			"after": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Unused"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-03-03T12:51:51Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

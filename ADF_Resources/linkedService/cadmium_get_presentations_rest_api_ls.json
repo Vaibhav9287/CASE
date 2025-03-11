@@ -1,0 +1,13 @@
+{
+	"name": "cadmium_get_presentations_rest_api_ls",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://www.conferenceharvester.com/conferenceportal3/webservices/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

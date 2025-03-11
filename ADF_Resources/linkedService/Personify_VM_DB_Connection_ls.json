@@ -1,0 +1,23 @@
+{
+	"name": "Personify_VM_DB_Connection_ls",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Generic linked service to connect Personify VM DB",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "case-dev-vm",
+			"database": "CASE770PROD_P360_1",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "sa",
+			"integratedSecurity": false,
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2MTZlOWFjZS00NTIyLTQ4OTQtYjc2NC1hOWEwNzQ3YWRhY2MiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Azure-VM-connection-selfhostedIR",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

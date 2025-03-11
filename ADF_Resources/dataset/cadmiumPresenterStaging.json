@@ -1,0 +1,17 @@
+{
+	"name": "cadmiumPresenterStaging",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_eus_dev_ls",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "cadmium",
+			"table": "presenterStaging"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

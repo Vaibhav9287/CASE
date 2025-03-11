@@ -1,0 +1,13 @@
+{
+	"name": "Cadmium_GetReviewQuestion_LinkedService",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://2769-103-132-196-250.ngrok-free.app/ReviewQuestions",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

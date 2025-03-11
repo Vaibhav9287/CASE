@@ -1,0 +1,693 @@
+{
+	"name": "Cadmium_Scorecard_GetReview_Batching_CHILD_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, coalesce(pipeline().parameters.PageCount, 1))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set Paginated URL",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PaginatedURL",
+								"value": {
+									"value": "@concat(pipeline().parameters.URL, '&page=', item())\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set Paginated URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@pipeline().parameters.EventID",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"ReviewID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['ReviewID']"
+											},
+											"sink": {
+												"name": "ReviewID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewDateAdded']"
+											},
+											"sink": {
+												"name": "ReviewDateAdded",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewDateEdited']"
+											},
+											"sink": {
+												"name": "ReviewDateEdited",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewDateCompleted']"
+											},
+											"sink": {
+												"name": "ReviewDateCompleted",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewSubmissionID']"
+											},
+											"sink": {
+												"name": "ReviewSubmissionID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewReviewerID']"
+											},
+											"sink": {
+												"name": "ReviewReviewerID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewType']"
+											},
+											"sink": {
+												"name": "ReviewType",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewComments']"
+											},
+											"sink": {
+												"name": "ReviewComments",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewComments2']"
+											},
+											"sink": {
+												"name": "ReviewComments2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewReco']"
+											},
+											"sink": {
+												"name": "ReviewReco",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer1']"
+											},
+											"sink": {
+												"name": "ReviewAnswer1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer2']"
+											},
+											"sink": {
+												"name": "ReviewAnswer2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer3']"
+											},
+											"sink": {
+												"name": "ReviewAnswer3"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer4']"
+											},
+											"sink": {
+												"name": "ReviewAnswer4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer5']"
+											},
+											"sink": {
+												"name": "ReviewAnswer5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer6']"
+											},
+											"sink": {
+												"name": "ReviewAnswer6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer7']"
+											},
+											"sink": {
+												"name": "ReviewAnswer7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer8']"
+											},
+											"sink": {
+												"name": "ReviewAnswer8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer9']"
+											},
+											"sink": {
+												"name": "ReviewAnswer9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer10']"
+											},
+											"sink": {
+												"name": "ReviewAnswer10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer11']"
+											},
+											"sink": {
+												"name": "ReviewAnswer11",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer12']"
+											},
+											"sink": {
+												"name": "ReviewAnswer12",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer13']"
+											},
+											"sink": {
+												"name": "ReviewAnswer13",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer14']"
+											},
+											"sink": {
+												"name": "ReviewAnswer14",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer15']"
+											},
+											"sink": {
+												"name": "ReviewAnswer15",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer16']"
+											},
+											"sink": {
+												"name": "ReviewAnswer16",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer17']"
+											},
+											"sink": {
+												"name": "ReviewAnswer17",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer18']"
+											},
+											"sink": {
+												"name": "ReviewAnswer18",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer19']"
+											},
+											"sink": {
+												"name": "ReviewAnswer19",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer20']"
+											},
+											"sink": {
+												"name": "ReviewAnswer20",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer21']"
+											},
+											"sink": {
+												"name": "ReviewAnswer21",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer22']"
+											},
+											"sink": {
+												"name": "ReviewAnswer22",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer23']"
+											},
+											"sink": {
+												"name": "ReviewAnswer23",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer24']"
+											},
+											"sink": {
+												"name": "ReviewAnswer24",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer25']"
+											},
+											"sink": {
+												"name": "ReviewAnswer25",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer26']"
+											},
+											"sink": {
+												"name": "ReviewAnswer26",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer27']"
+											},
+											"sink": {
+												"name": "ReviewAnswer27",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer28']"
+											},
+											"sink": {
+												"name": "ReviewAnswer28",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer29']"
+											},
+											"sink": {
+												"name": "ReviewAnswer29",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer30']"
+											},
+											"sink": {
+												"name": "ReviewAnswer30"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer31']"
+											},
+											"sink": {
+												"name": "ReviewAnswer31"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer32']"
+											},
+											"sink": {
+												"name": "ReviewAnswer32",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer33']"
+											},
+											"sink": {
+												"name": "ReviewAnswer33",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer34']"
+											},
+											"sink": {
+												"name": "ReviewAnswer34",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer35']"
+											},
+											"sink": {
+												"name": "ReviewAnswer35",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer36']"
+											},
+											"sink": {
+												"name": "ReviewAnswer36",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer37']"
+											},
+											"sink": {
+												"name": "ReviewAnswer37",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer38']"
+											},
+											"sink": {
+												"name": "ReviewAnswer38",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer39']"
+											},
+											"sink": {
+												"name": "ReviewAnswer39",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer40']"
+											},
+											"sink": {
+												"name": "ReviewAnswer40",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer41']"
+											},
+											"sink": {
+												"name": "ReviewAnswer41",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer42']"
+											},
+											"sink": {
+												"name": "ReviewAnswer42",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer43']"
+											},
+											"sink": {
+												"name": "ReviewAnswer43",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer44']"
+											},
+											"sink": {
+												"name": "ReviewAnswer44",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer45']"
+											},
+											"sink": {
+												"name": "ReviewAnswer45",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer46']"
+											},
+											"sink": {
+												"name": "ReviewAnswer46",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer47']"
+											},
+											"sink": {
+												"name": "ReviewAnswer47",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer48']"
+											},
+											"sink": {
+												"name": "ReviewAnswer48",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer49']"
+											},
+											"sink": {
+												"name": "ReviewAnswer49",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewAnswer50']"
+											},
+											"sink": {
+												"name": "ReviewAnswer50",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['ReviewScore']"
+											},
+											"sink": {
+												"name": "ReviewScore",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": "@variables('PaginatedURL')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_GetReview_CDP_Sink_DS",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"URL": {
+				"type": "string"
+			},
+			"PageCount": {
+				"type": "int"
+			},
+			"EventID": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"PaginatedURL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

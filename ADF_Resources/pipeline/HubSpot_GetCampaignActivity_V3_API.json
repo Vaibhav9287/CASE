@@ -1,0 +1,261 @@
+{
+	"name": "HubSpot_GetCampaignActivity_V3_API",
+	"properties": {
+		"description": "To get Contacts from Hubspot using API",
+		"activities": [
+			{
+				"name": "CopyHubSpotCampaignActivity",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "tokenExpire",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ', variables('Token'))",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"RecordID"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['properties']['hs_color_hex']"
+								},
+								"sink": {
+									"name": "Color",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_start_date']"
+								},
+								"sink": {
+									"name": "CampaignStartDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_owner']"
+								},
+								"sink": {
+									"name": "CampaignOwner",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_goal']"
+								},
+								"sink": {
+									"name": "CampaignGoal",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_audience']"
+								},
+								"sink": {
+									"name": "CampaignAudience",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_created_by_user_id']"
+								},
+								"sink": {
+									"name": "CreatedByUserID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_name']"
+								},
+								"sink": {
+									"name": "CampaignName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['hs_object_id']"
+								},
+								"sink": {
+									"name": "RecordID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['createdAt']"
+								},
+								"sink": {
+									"name": "CreatedAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['updatedAt']"
+								},
+								"sink": {
+									"name": "UpdatedAt",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['results']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "HubSpot_GetCampaignActivity_Dataset",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Case_Eus_Dev_HubSpot_Campaign",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "To get Token Details",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-api-key": "1q2w3e4r5t6y7u8i9o0p"
+					},
+					"url": "https://case-eus-dev-casehubspot-api.azurewebsites.net/getHubspotToken"
+				}
+			},
+			{
+				"name": "token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "To get Token Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('To get Token Details').output.token\n\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "tokenExpire",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tokenExpireAt",
+					"value": {
+						"value": "@activity('To get Token Details').output.expireAt\n\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Offset": {
+				"type": "String"
+			},
+			"OffsetValue": {
+				"type": "Integer"
+			},
+			"hasMore": {
+				"type": "Boolean"
+			},
+			"Token": {
+				"type": "String"
+			},
+			"tokenExpireAt": {
+				"type": "String"
+			},
+			"after": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-13T06:51:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

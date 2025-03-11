@@ -1,0 +1,22 @@
+{
+	"name": "SFTP_Personify_Weekly_Full_Backup_Source_Dataset",
+	"properties": {
+		"description": "This dataset points to sftp server where full backup file is present",
+		"linkedServiceName": {
+			"referenceName": "SFTP_Personify_GetBackup_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": "/CASEDB/FULL"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

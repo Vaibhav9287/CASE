@@ -1,0 +1,16 @@
+{
+	"name": "HubSpot_GetContact_Clone",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HubSpot_GetContact_Clone_LS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

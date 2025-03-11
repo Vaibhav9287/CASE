@@ -1,0 +1,35 @@
+{
+	"name": "HubSpot_GetContactsData_Into_CDP_Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "HubSpot_GetContacts_V3_API",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-11-20T12:33:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						10
+					],
+					"weekDays": [
+						"Saturday"
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "HubSpot_GetEmailActivity_InnerLoop_LS",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.hubapi.com/crm/v3/objects/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

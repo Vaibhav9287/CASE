@@ -1,0 +1,2235 @@
+{
+	"name": "Cadmium_Scorecard_GetSubmission_Batching_CHILD_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, coalesce(pipeline().parameters.PageCount, 1))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set Paginated URL",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PaginatedURL",
+								"value": {
+									"value": "@concat(pipeline().parameters.URL, '&page=', item())\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set Paginated URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@pipeline().parameters.EventID",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"SubmissionID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['SubmissionID']"
+											},
+											"sink": {
+												"name": "SubmissionID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterID']"
+											},
+											"sink": {
+												"name": "SubmitterID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionStatus']"
+											},
+											"sink": {
+												"name": "SubmissionStatus",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionDateAdded']"
+											},
+											"sink": {
+												"name": "SubmissionDateAdded",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionDateCompleted']"
+											},
+											"sink": {
+												"name": "SubmissionDateCompleted",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionTypeID']"
+											},
+											"sink": {
+												"name": "SubmissionTypeID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCategory']"
+											},
+											"sink": {
+												"name": "SubmissionCategory",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionTopic']"
+											},
+											"sink": {
+												"name": "SubmissionTopic",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionTitle']"
+											},
+											"sink": {
+												"name": "SubmissionTitle",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionOAR']"
+											},
+											"sink": {
+												"name": "SubmissionOAR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionReviewCount']"
+											},
+											"sink": {
+												"name": "SubmissionReviewCount",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionFinalDecision']"
+											},
+											"sink": {
+												"name": "SubmissionFinalDecision",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective1']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective2']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective3']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective4']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective5']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective6']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective7']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective8']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective9']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionLearningObjective10']"
+											},
+											"sink": {
+												"name": "SubmissionLearningObjective10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionTrackName']"
+											},
+											"sink": {
+												"name": "SubmissionTrackName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionSessionName']"
+											},
+											"sink": {
+												"name": "SubmissionSessionName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionSessionTimeStart']"
+											},
+											"sink": {
+												"name": "SubmissionSessionTimeStart",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionSessionTimeEnd']"
+											},
+											"sink": {
+												"name": "SubmissionSessionTimeEnd",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionPresentationDate']"
+											},
+											"sink": {
+												"name": "SubmissionPresentationDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionPresentationTimeStart']"
+											},
+											"sink": {
+												"name": "SubmissionPresentationTimeStart",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionPresentationTimeEnd']"
+											},
+											"sink": {
+												"name": "SubmissionPresentationTimeEnd",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionRoom']"
+											},
+											"sink": {
+												"name": "SubmissionRoom",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField1']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField2']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField3']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField4']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField5']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField6']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField7']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField8']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField9']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField10']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField11']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField11",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField12']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField12",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField13']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField13",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField14']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField14",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField15']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField15",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField16']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField16",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField17']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField17",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField18']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField18",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField19']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField19",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField20']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField20",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField21']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField21",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField22']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField22",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField23']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField23",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField24']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField24",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField25']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField25",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField26']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField26",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField27']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField27",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField28']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField28",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField29']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField29",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField30']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField30",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField31']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField31",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField32']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField32",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField33']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField33",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField34']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField34",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField35']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField35",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField36']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField36",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField37']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField37",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField38']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField38",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField39']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField39",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField40']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField40",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField41']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField41",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField42']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField42",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField43']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField43",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField44']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField44",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField45']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField45",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField46']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField46",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField47']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField47",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField48']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField48",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField49']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField49",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField50']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField50",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField51']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField51",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField52']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField52",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField53']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField53",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField54']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField54",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField55']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField55",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField56']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField56",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField57']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField57",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField58']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField58",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField59']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField59",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField60']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField60",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField61']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField61",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField62']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField62",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField63']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField63",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField64']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField64",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField65']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField65",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField66']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField66",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField67']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField67",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField68']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField68",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField69']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField69",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField70']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField70",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField71']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField71",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField72']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField72",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField73']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField73",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField74']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField74",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField75']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField75",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField76']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField76",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField77']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField77",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField78']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField78",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField79']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField79",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField80']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField80",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField81']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField81",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField82']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField82",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField83']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField83",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField84']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField84",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField85']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField85",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField86']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField86",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField87']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField87",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField88']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField88",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField89']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField89",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField90']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField90",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField91']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField91",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField92']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField92",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField93']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField93",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField94']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField94",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField95']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField95",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField96']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField96",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField97']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField97",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField98']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField98",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField99']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField99",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomLongField100']"
+											},
+											"sink": {
+												"name": "SubmissionCustomLongField100",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField1']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField1",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField2']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField2",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField3']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField3",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField4']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField4",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField5']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField5",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField6']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField6",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField7']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField7",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField8']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField8",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField9']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField9",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField10']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField10",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField11']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField11",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField12']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField12",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField13']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField13",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField14']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField14",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField15']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField15",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField16']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField16",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField17']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField17",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField18']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField18",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField19']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField19",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField20']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField20",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField21']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField21",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField22']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField22",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField23']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField23",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField24']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField24",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField25']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField25",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField26']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField26",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField27']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField27",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField28']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField28",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField29']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField29",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField30']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField30",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField31']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField31",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField32']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField32",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField33']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField33",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField34']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField34",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField35']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField35",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField36']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField36",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField37']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField37",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField38']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField38",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField39']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField39",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField40']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField40",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField41']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField41",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField42']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField42",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField43']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField43",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField44']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField44",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField45']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField45",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField46']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField46",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField47']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField47",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField48']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField48",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField49']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField49",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField50']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField50",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField51']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField51",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField52']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField52",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField53']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField53",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField54']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField54",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField55']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField55",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField56']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField56",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField57']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField57",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField58']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField58",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField59']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField59",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField60']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField60",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField61']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField61",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField62']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField62",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField63']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField63",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField64']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField64",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField65']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField65",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField66']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField66",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField67']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField67",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField68']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField68",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField69']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField69",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField70']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField70",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField71']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField71",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField72']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField72",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField73']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField73",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField74']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField74",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField75']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField75",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField76']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField76",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField77']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField77",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField78']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField78",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField79']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField79",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField80']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField80",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField81']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField81",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField82']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField82",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField83']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField83",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField84']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField84",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField85']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField85",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField86']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField86",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField87']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField87",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField88']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField88",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField89']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField89",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField90']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField90",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField91']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField91",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField92']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField92",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField93']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField93",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField94']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField94",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField95']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField95",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField96']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField96",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField97']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField97",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField98']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField98",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField99']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField99",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionCustomShortField100']"
+											},
+											"sink": {
+												"name": "SubmissionCustomShortField100",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionIDexternal']"
+											},
+											"sink": {
+												"name": "SubmissionIDexternal",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionNumber']"
+											},
+											"sink": {
+												"name": "SubmissionNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['results']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": "@variables('PaginatedURL')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Submission_CDP_Sink_DS",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"URL": {
+				"type": "string"
+			},
+			"PageCount": {
+				"type": "int"
+			},
+			"EventID": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"PaginatedURL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

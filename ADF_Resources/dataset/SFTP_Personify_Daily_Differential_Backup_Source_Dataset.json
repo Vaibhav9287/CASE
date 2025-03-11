@@ -1,0 +1,30 @@
+{
+	"name": "SFTP_Personify_Daily_Differential_Backup_Source_Dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SFTP_Personify_GetBackup_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileNameParam": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Personify"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@{dataset().fileNameParam}",
+					"type": "Expression"
+				},
+				"folderPath": "/CASEDB/DIFF"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

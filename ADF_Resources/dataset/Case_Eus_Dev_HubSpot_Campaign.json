@@ -1,0 +1,61 @@
+{
+	"name": "Case_Eus_Dev_HubSpot_Campaign",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "case_dev_cdp_ls",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HubSpot"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Color",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignStartDate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignOwner",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignGoal",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignAudience",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedByUserID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CampaignName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RecordID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CreatedAt",
+				"type": "nvarchar"
+			},
+			{
+				"name": "UpdatedAt",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Hubspot",
+			"table": "Campaigns"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

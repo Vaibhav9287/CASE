@@ -1,0 +1,6 @@
+{
+	"name": "Azure-VM-connection-selfhostedIR",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

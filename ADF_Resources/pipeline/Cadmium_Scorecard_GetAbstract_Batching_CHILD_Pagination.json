@@ -1,0 +1,450 @@
+{
+	"name": "Cadmium_Scorecard_GetAbstract_Batching_CHILD_Pagination",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(1, coalesce(pipeline().parameters.PageCount, 1))\n",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set Paginated URL",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PaginatedURL",
+								"value": {
+									"value": "@concat(pipeline().parameters.URL, '&page=', item())\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set Paginated URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"additionalColumns": [
+										{
+											"name": "EventID",
+											"value": {
+												"value": "@pipeline().parameters.EventID",
+												"type": "Expression"
+											}
+										}
+									],
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "SqlServerSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"AbstractID"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['AbstractID']"
+											},
+											"sink": {
+												"name": "AbstractID"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmissionID']"
+											},
+											"sink": {
+												"name": "SubmissionID"
+											}
+										},
+										{
+											"source": {
+												"path": "['SubmitterID']"
+											},
+											"sink": {
+												"name": "SubmitterID"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractTopic']"
+											},
+											"sink": {
+												"name": "AbstractTopic"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractTopicAlt']"
+											},
+											"sink": {
+												"name": "AbstractTopicAlt"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractSubTopic']"
+											},
+											"sink": {
+												"name": "AbstractSubTopic"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText0']"
+											},
+											"sink": {
+												"name": "AbstractText0"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText1']"
+											},
+											"sink": {
+												"name": "AbstractText1"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText2']"
+											},
+											"sink": {
+												"name": "AbstractText2"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText3']"
+											},
+											"sink": {
+												"name": "AbstractText3"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText4']"
+											},
+											"sink": {
+												"name": "AbstractText4"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText5']"
+											},
+											"sink": {
+												"name": "AbstractText5"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText11']"
+											},
+											"sink": {
+												"name": "AbstractText11"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText12']"
+											},
+											"sink": {
+												"name": "AbstractText12"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText13']"
+											},
+											"sink": {
+												"name": "AbstractText13"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText14']"
+											},
+											"sink": {
+												"name": "AbstractText14"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText15']"
+											},
+											"sink": {
+												"name": "AbstractText15"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText16']"
+											},
+											"sink": {
+												"name": "AbstractText16"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText27']"
+											},
+											"sink": {
+												"name": "AbstractText27"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText28']"
+											},
+											"sink": {
+												"name": "AbstractText28"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText29']"
+											},
+											"sink": {
+												"name": "AbstractText29"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText30']"
+											},
+											"sink": {
+												"name": "AbstractText30"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText31']"
+											},
+											"sink": {
+												"name": "AbstractText31"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText32']"
+											},
+											"sink": {
+												"name": "AbstractText32"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText33']"
+											},
+											"sink": {
+												"name": "AbstractText33"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText34']"
+											},
+											"sink": {
+												"name": "AbstractText34"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText35']"
+											},
+											"sink": {
+												"name": "AbstractText35"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractText36']"
+											},
+											"sink": {
+												"name": "AbstractText36"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractTargetAudience']"
+											},
+											"sink": {
+												"name": "AbstractTargetAudience"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractJobFunction']"
+											},
+											"sink": {
+												"name": "AbstractJobFunction"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractPickList']"
+											},
+											"sink": {
+												"name": "AbstractPickList"
+											}
+										},
+										{
+											"source": {
+												"path": "['TargetAudienceOther']"
+											},
+											"sink": {
+												"name": "TargetAudienceOther"
+											}
+										},
+										{
+											"source": {
+												"path": "['JobFunctionOther']"
+											},
+											"sink": {
+												"name": "JobFunctionOther"
+											}
+										},
+										{
+											"source": {
+												"path": "['PickListOther']"
+											},
+											"sink": {
+												"name": "PickListOther"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractQuestion1']"
+											},
+											"sink": {
+												"name": "AbstractQuestion1"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractQuestion2']"
+											},
+											"sink": {
+												"name": "AbstractQuestion2"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractQuestion3']"
+											},
+											"sink": {
+												"name": "AbstractQuestion3"
+											}
+										},
+										{
+											"source": {
+												"path": "['AbstractQuestion4']"
+											},
+											"sink": {
+												"name": "AbstractQuestion4"
+											}
+										},
+										{
+											"source": {
+												"path": "$['EventID']"
+											},
+											"sink": {
+												"name": "EventID"
+											}
+										}
+									],
+									"collectionReference": "$['results']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_Dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeUrl": "@variables('PaginatedURL')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Cadmium_Scorecard_GetAbstract_CDP_Sink_DS",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"URL": {
+				"type": "string"
+			},
+			"PageCount": {
+				"type": "int"
+			},
+			"EventID": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"PaginatedURL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

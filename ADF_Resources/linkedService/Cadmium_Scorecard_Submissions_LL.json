@@ -1,0 +1,13 @@
+{
+	"name": "Cadmium_Scorecard_Submissions_LL",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://www.conferenceabstracts.com/webservices/",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

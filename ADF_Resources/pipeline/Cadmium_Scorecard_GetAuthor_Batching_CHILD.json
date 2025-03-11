@@ -1,0 +1,245 @@
+{
+	"name": "Cadmium_Scorecard_GetAuthor_Batching_CHILD",
+	"properties": {
+		"activities": [
+			{
+				"name": "getAPIURL_in_Batch",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n'https://www.conferenceabstracts.com/webservices/api.asp?APIKey=@{pipeline().parameters.APIKeyParam}&Method=getAuthorCount&eID=' + CAST(Event_ID AS VARCHAR) AS Author_Url, Event_ID\nFROM\n admin.Event_Details WHERE BatchID = @{pipeline().parameters.BatchID}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "case_eus_dev_Process_Batch",
+						"type": "DatasetReference",
+						"parameters": {
+							"BatchID": {
+								"value": "@{pipeline().parameters.BatchID}",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "LoopOverAPI_URL",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "getAPIURL_in_Batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('getAPIURL_in_Batch').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@item().Author_Url",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Count",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Web1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Count",
+								"value": {
+									"value": "@int(activity('Web1').output.results[0].Count)\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Page Count",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Count",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PageCount",
+								"value": {
+									"value": "@if(equals(mod(variables('Count'), 100), 0), div(variables('Count'), 100), add(div(variables('Count'), 100), 1))\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "EventID",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Page Count",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "EventID",
+								"value": {
+									"value": "@string(item().Event_ID)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "URL",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "EventID",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "URL",
+								"value": {
+									"value": "@concat('api.asp?APIKey=',pipeline().parameters.APIKeyParam,'&Method=getAuthors&eID=', variables('EventID'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute Pipeline for pagination",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "URL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Cadmium_Scorecard_GetAuthor_Batching_CHILD_Pagination",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"URL": {
+										"value": "@variables('URL')",
+										"type": "Expression"
+									},
+									"PageCount": {
+										"value": "@variables('PageCount')",
+										"type": "Expression"
+									},
+									"EventID": {
+										"value": "@variables('EventID')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"BatchID": {
+				"type": "int"
+			},
+			"APIKeyParam": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"Count": {
+				"type": "Integer"
+			},
+			"PageCount": {
+				"type": "Integer"
+			},
+			"URL": {
+				"type": "String"
+			},
+			"EventID": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Cadmium-Scorecard"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-02-17T11:26:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
