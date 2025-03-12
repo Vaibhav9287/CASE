@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "This trigger run every friday at 8 pm IST to get full backup from client's Sftp server",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {

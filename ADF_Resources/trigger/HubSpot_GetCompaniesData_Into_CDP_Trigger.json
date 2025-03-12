@@ -2,7 +2,7 @@
 	"name": "HubSpot_GetCompaniesData_Into_CDP_Trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {

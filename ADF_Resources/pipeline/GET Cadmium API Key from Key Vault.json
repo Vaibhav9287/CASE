@@ -102,7 +102,7 @@
 			"name": "Generic cadimium for API key"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-02-17T11:27:48Z"
+		"lastPublishTime": "2025-03-12T04:39:27Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

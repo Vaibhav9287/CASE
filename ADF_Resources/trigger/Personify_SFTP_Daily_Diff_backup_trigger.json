@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "This trigger runs daily to get diff back from sftp and put it into vm",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {

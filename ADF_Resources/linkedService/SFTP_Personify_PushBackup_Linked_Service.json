@@ -6,12 +6,12 @@
 		"annotations": [],
 		"type": "Sftp",
 		"typeProperties": {
-			"host": "172.210.4.97",
+			"host": "172.174.255.153",
 			"port": 22,
 			"skipHostKeyValidation": true,
 			"authenticationType": "Basic",
-			"userName": "case-dev-vmadmin",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDdDRjU0Nzg5LTg0N0ItNEUzQi1BMkEzLUEyN0JFOTIyM0ZBM183MzA3YWNkMy1mYTgwLTQwOGQtOTU0OC04NTFhYWM5N2E0OWUiDQp9"
+			"userName": "case-prod-vmadmin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDJBRTk4Q0U3LTIwNTQtNDNBNi1BNzMxLUExQzA0NzdGNzY2NV85NzQ2NDY3NS1kNTAyLTRjYTItYmEzNy02MTQ0MTI5ZDNhNDkiDQp9"
 		}
 	}
 }

@@ -5,6 +5,9 @@
 			"referenceName": "case_eus_dev_ls",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "HubSpot"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],

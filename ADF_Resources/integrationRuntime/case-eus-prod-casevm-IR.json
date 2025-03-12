@@ -1,0 +1,7 @@
+{
+	"name": "case-eus-prod-casevm-IR",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "To install this IR on prod VM"
+	}
+}
